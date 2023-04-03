@@ -9,6 +9,15 @@
  */
 
 public class AirObject implements Comparable<AirObject> {
+
+    private int xOrig;
+    private int yOrig;
+    private int zOrig;
+    
+    private int xWidth;
+    private int yWidth;
+    private int zWidth;
+    
     private String name; // Name for this AirObject
 
     /**
@@ -29,7 +38,7 @@ public class AirObject implements Comparable<AirObject> {
      * @return x origin
      */
     public int getXorig() {
-        return 0;
+        return xOrig;
     }
 
 
@@ -39,7 +48,7 @@ public class AirObject implements Comparable<AirObject> {
      * @return x width
      */
     public int getXwidth() {
-        return 0;
+        return xWidth;
     }
 
 
@@ -49,7 +58,7 @@ public class AirObject implements Comparable<AirObject> {
      * @return y origin
      */
     public int getYorig() {
-        return 0;
+        return yOrig;
     }
 
 
@@ -60,7 +69,7 @@ public class AirObject implements Comparable<AirObject> {
      */
 
     public int getYwidth() {
-        return 0;
+        return yWidth;
     }
 
 
@@ -70,7 +79,7 @@ public class AirObject implements Comparable<AirObject> {
      * @return z origin
      */
     public int getZorig() {
-        return 0;
+        return zOrig;
     }
 
 
@@ -81,7 +90,7 @@ public class AirObject implements Comparable<AirObject> {
      */
 
     public int getZwidth() {
-        return 0;
+        return zWidth;
     }
 
 
@@ -94,6 +103,35 @@ public class AirObject implements Comparable<AirObject> {
         return name;
     }
 
+
+    public void setxOrig(int xOrig) {
+        this.xOrig = xOrig;
+    }
+
+
+    public void setyOrig(int yOrig) {
+        this.yOrig = yOrig;
+    }
+
+
+    public void setzOrig(int zOrig) {
+        this.zOrig = zOrig;
+    }
+
+
+    public void setxWidth(int xWidth) {
+        this.xWidth = xWidth;
+    }
+
+
+    public void setyWidth(int yWidth) {
+        this.yWidth = yWidth;
+    }
+
+
+    public void setzWidth(int zWidth) {
+        this.zWidth = zWidth;
+    }
 
     /**
      * Compare against a (name) String.
