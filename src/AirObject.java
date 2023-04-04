@@ -18,17 +18,30 @@ public class AirObject implements Comparable<AirObject> {
     private int yWidth;
     private int zWidth;
     
+    private int level;
+
     private String name; // Name for this AirObject
 
     /**
      * Constructor for base AirObject
      * 
-     * @param inname
+     * @param name
      *            The object's name
      *
      */
-    public AirObject(String inname) {
-        name = inname;
+    public AirObject(String name) {
+        this.name = name;
+    }
+    
+    public AirObject(int xOrig, int yOrig, int zOrig, int xWidth, int yWidth, int zWidth, int level) {
+        
+        this.level = level;
+        this.xOrig = xOrig;
+        this.yOrig = yOrig;
+        this.zOrig = zOrig;
+        this.xWidth = xWidth;
+        this.yWidth = yWidth;
+        this.zWidth = zWidth;
     }
 
 
@@ -41,7 +54,6 @@ public class AirObject implements Comparable<AirObject> {
         return xOrig;
     }
 
-
     /**
      * Getter for x width
      * 
@@ -51,7 +63,6 @@ public class AirObject implements Comparable<AirObject> {
         return xWidth;
     }
 
-
     /**
      * Getter for y origin
      * 
@@ -60,7 +71,6 @@ public class AirObject implements Comparable<AirObject> {
     public int getYorig() {
         return yOrig;
     }
-
 
     /**
      * Getter for y width
@@ -72,7 +82,6 @@ public class AirObject implements Comparable<AirObject> {
         return yWidth;
     }
 
-
     /**
      * Getter for z origin
      * 
@@ -81,7 +90,6 @@ public class AirObject implements Comparable<AirObject> {
     public int getZorig() {
         return zOrig;
     }
-
 
     /**
      * Getter for z width
@@ -131,6 +139,16 @@ public class AirObject implements Comparable<AirObject> {
 
     public void setzWidth(int zWidth) {
         this.zWidth = zWidth;
+    }
+    
+    
+    public int getLevel() {
+        return level;
+    }
+
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     /**
