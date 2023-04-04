@@ -4,13 +4,13 @@
  */
 public class BinTree {
 
-    private Node root;
+    private AirObject root;
 
     /**
      * The constructor of the tree
      */
     public BinTree() {
-        root = new FlyWeight(0, 0, 0, 1024, 1024); // default at level 0
+        root = new AirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at level 0
     }
 
 
@@ -18,17 +18,17 @@ public class BinTree {
      * clear the tree
      */
     public void clear() {
-        root = new FlyWeight(0, 0, 0, 1024, 1024); // default at level 0
+        root = new AirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at level 0
     }
 
 
     /**
      * Check if the tree is empty
      * 
-     * @return True if the tree is empty, false if not
+     * @return True if the tree is only AirObject, if not empty, it should be leaf or internal airObject
      */
     public boolean isEmpty() {
-        return (root instanceof FlyWeight);
+        return (root instanceof AirObject);
     }
 
 
