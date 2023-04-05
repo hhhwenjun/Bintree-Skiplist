@@ -24,6 +24,10 @@ public class LeafAirObject extends AirObject {
         container[numOfObject] = airObject;
         numOfObject++;
     }
+    
+    public AirObject[] getContainer() {
+        return container;
+    }
 
 
     public int getCurrNum() {

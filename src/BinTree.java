@@ -36,22 +36,20 @@ public class BinTree {
      * Insert content to the Bintree
      * Throws when the data is null
      * 
-     * @param city
-     *            name of the city
-     * @param locX
-     *            X coordinate of city
-     * @param locY
-     *            Y coordinate of city
+     * @param airObject
      * @throws IllegalArgumentException
      */
-    public void insert(int locX, int locY, String city)
+    public void insert(AirObject airObject)
         throws IllegalArgumentException {
         if (isEmpty()) {
-            root = new Leaf(0, city, 0, 0, locX, locY, root.getWidth(), root
-                .getHeight());
+            root = new LeafAirObject(0, 0, 0, 1024, 1024, 1024, 0);
+            // current root is a leaf, only contain the newly inserted air object
+            LeafAirObject currRoot = (LeafAirObject)root;
+            currRoot.addAirObject(airObject);
+            root = currRoot;
         }
         else {
-            root = recursiveInsert(root, city, locX, locY);
+            root = recursiveInsert(root, airObject);
         }
 
     }
@@ -59,25 +57,23 @@ public class BinTree {
 
     // ----------------------------------------------------------
     /**
-     * insert a city node recursively
+     * insert an air object recursively
      * 
-     * @param currNode
+     * @param curr
      *            the current node
-     * @param city
-     *            the name of the city
-     * @param locX
-     *            X coordinate of city
-     * @param locY
-     *            Y coordinate of city
-     * @return currNode
+     * @param AirObject insert object
+     * @return Air object for recursion
      * @throws IllegalArgumentException
      */
-    public Node recursiveInsert(Node currNode, String city, int locX, int locY)
+    public AirObject recursiveInsert(AirObject curr, AirObject insertObject)
         throws IllegalArgumentException {
-        // base case
-        if (currNode instanceof FlyWeight) {
-            return new Leaf(currNode.getLevel(), city, currNode.getX(), currNode
-                .getY(), locX, locY, currNode.getWidth(), currNode.getHeight());
+        // base case, root either be leaf or internal node
+        if (curr instanceof LeafAirObject) {
+            LeafAirObject currRoot = (LeafAirObject)root;
+            if (shouldSplit(currRoot, insertObject)) {
+                // TODO: make it a internal air object, then keep adding here
+            }
+            
         }
         // it is internal node, keep going down
         if (currNode instanceof InternalNode) {
@@ -125,6 +121,41 @@ public class BinTree {
 
         }
         return currNode;
+    }
+    
+    private boolean shouldSplit(LeafAirObject leaf, AirObject insertObject) {
+        if (leaf.getCurrNum() <= 3) return false;
+        AirObject[] container = leaf.getContainer();
+        int overlapCount = 0;
+        for (int i = 0; i < leaf.getCurrNum(); i++) {
+            AirObject currObject = container[i];
+            if (overlap(currObject, insertObject)) {
+                overlapCount++;
+            }
+        }
+        
+        return overlapCount < leaf.getCurrNum();
+    }
+    
+    private boolean overlap(AirObject object1, AirObject object2) {
+        int object1maxX = object1.getXorig() + object1.getXwidth();
+        int object1minX = object1.getXorig();
+        int object2maxX = object2.getXorig() + object2.getXwidth();
+        int object2minX = object2.getXorig();
+        
+        int object1maxY = object1.getYorig() + object1.getYwidth();
+        int object1minY = object1.getYorig();
+        int object2maxY = object2.getYorig() + object2.getYwidth();
+        int object2minY = object2.getYorig();
+        
+        int object1maxZ = object1.getZorig() + object1.getZwidth();
+        int object1minZ = object1.getZorig();
+        int object2maxZ = object2.getZorig() + object2.getZwidth();
+        int object2minZ = object2.getZorig();
+        
+        return (object1maxX > object2minX || object1minX < object2maxX)
+            && (object1maxY > object2minY || object1minY < object2maxY)
+            && (object1maxZ > object2minZ || object1minZ < object2maxZ);
     }
 
 
@@ -327,17 +358,6 @@ public class BinTree {
 
         return results;
     }
-
-
-    private boolean overlap(Node node1, Node node2) {
-        int xOverlap = Math.min(node1.getX() + node1.getWidth(), node2.getX()
-            + node2.getWidth()) - Math.max(node1.getX(), node2.getX());
-        int yOverlap = Math.min(node1.getY() + node1.getHeight(), node2.getY()
-            + node2.getHeight()) - Math.max(node1.getY(), node2.getY());
-        return xOverlap > 0 && yOverlap > 0;
-
-    }
-
 
     private boolean insideRect(
         int x,
