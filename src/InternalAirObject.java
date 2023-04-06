@@ -7,6 +7,10 @@ public class InternalAirObject extends AirObject {
     public InternalAirObject(String name) {
         super(name);
     }
+    
+    public InternalAirObject(int xOrig, int yOrig, int zOrig, int xWidth, int yWidth, int zWidth, int level) {
+        super(xOrig, yOrig, zOrig, xWidth, yWidth, zWidth, level);
+    }
 
     public AirObject getLeft() {
         return left;

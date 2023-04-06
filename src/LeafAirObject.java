@@ -25,6 +25,25 @@ public class LeafAirObject extends AirObject {
         numOfObject++;
     }
     
+    public void removeAirObject(AirObject airObject) {
+        String targetName = airObject.getName();
+        int index = 0;
+        for (int i = 0; i < numOfObject; i++) {
+            if (targetName.equals(container[i].getName())) {
+                index = i;
+                break;
+            }
+        }
+        numOfObject--;
+        AirObject lastObject = container[numOfObject];
+        container[index] = lastObject;
+        container[numOfObject] = null;
+    }
+    
+    public boolean isEmpty() {
+        return getCurrNum() == 0;
+    }
+    
     public AirObject[] getContainer() {
         return container;
     }

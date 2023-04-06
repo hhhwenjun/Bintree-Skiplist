@@ -33,6 +33,10 @@ public class AirObject implements Comparable<AirObject> {
         this.name = name;
     }
     
+    public AirObject() {
+        this.level = 0; // empty flyweight
+    }
+    
     public AirObject(int xOrig, int yOrig, int zOrig, int xWidth, int yWidth, int zWidth, int level) {
         
         this.level = level;

@@ -10,7 +10,8 @@ public class BinTree {
      * The constructor of the tree
      */
     public BinTree() {
-        root = new AirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at level 0
+        root = new AirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at level
+                                                            // 0
     }
 
 
@@ -18,14 +19,16 @@ public class BinTree {
      * clear the tree
      */
     public void clear() {
-        root = new AirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at level 0
+        root = new AirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at level
+                                                            // 0
     }
 
 
     /**
      * Check if the tree is empty
      * 
-     * @return True if the tree is only AirObject, if not empty, it should be leaf or internal airObject
+     * @return True if the tree is only AirObject, if not empty, it should be
+     *         leaf or internal airObject
      */
     public boolean isEmpty() {
         return (root instanceof AirObject);
@@ -39,11 +42,11 @@ public class BinTree {
      * @param airObject
      * @throws IllegalArgumentException
      */
-    public void insert(AirObject airObject)
-        throws IllegalArgumentException {
+    public void insert(AirObject airObject) throws IllegalArgumentException {
         if (isEmpty()) {
             root = new LeafAirObject(0, 0, 0, 1024, 1024, 1024, 0);
-            // current root is a leaf, only contain the newly inserted air object
+            // current root is a leaf, only contain the newly inserted air
+            // object
             LeafAirObject currRoot = (LeafAirObject)root;
             currRoot.addAirObject(airObject);
             root = currRoot;
@@ -61,7 +64,7 @@ public class BinTree {
      * 
      * @param curr
      *            the current node
-     * @param AirObject insert object
+     * @param insertObject Air object to insert
      * @return Air object for recursion
      * @throws IllegalArgumentException
      */
@@ -69,62 +72,76 @@ public class BinTree {
         throws IllegalArgumentException {
         // base case, root either be leaf or internal node
         if (curr instanceof LeafAirObject) {
-            LeafAirObject currRoot = (LeafAirObject)root;
+            LeafAirObject currRoot = (LeafAirObject)curr;
             if (shouldSplit(currRoot, insertObject)) {
-                // TODO: make it a internal air object, then keep adding here
+                InternalAirObject internal = new InternalAirObject(currRoot
+                    .getXorig(), currRoot.getYorig(), currRoot.getZorig(),
+                    currRoot.getXwidth(), currRoot.getYwidth(), currRoot
+                        .getZwidth(), currRoot.getLevel());
+                AirObject[] currInsertedObjs = currRoot.getContainer();
+                internal = splitHelper(internal);
+                for (int i = 0; i < currRoot.getCurrNum(); i++) {
+                    curr = recursiveInsert(internal, currInsertedObjs[i]);
+                }
+                curr = recursiveInsert(internal, insertObject);
             }
-            
+            else {
+                // add to current leaf
+                currRoot.addAirObject(insertObject);
+                curr = currRoot;
+            }
         }
         // it is internal node, keep going down
-        if (currNode instanceof InternalNode) {
-            InternalNode currInternal = (InternalNode)currNode;
-            if (currInternal.getHeight() == currInternal.getWidth()) {
-                // next split at width
-                if (locX < currInternal.getX() + currInternal.getWidth() / 2) {
+        else {
+            InternalAirObject currInternal = (InternalAirObject)curr;
+            int locX = insertObject.getXorig();
+            int locY = insertObject.getYorig();
+            int locZ = insertObject.getZorig();
+
+            if (currInternal.getXwidth() < currInternal.getYwidth()) {
+                // next split at Y
+                if (locY < currInternal.getYorig() + currInternal.getYwidth()
+                    / 2) {
                     currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                        city, locX, locY));
+                        insertObject));
                 }
                 else {
                     currInternal.setRight(recursiveInsert(currInternal
-                        .getRight(), city, locX, locY));
+                        .getRight(), insertObject));
+                }
+            }
+            else if (currInternal.getYwidth() < currInternal.getZwidth()) {
+                // next split at Z
+                if (locZ < currInternal.getZorig() + currInternal.getZwidth()
+                    / 2) {
+                    currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
+                        insertObject));
+                }
+                else {
+                    currInternal.setRight(recursiveInsert(currInternal
+                        .getRight(), insertObject));
                 }
             }
             else {
-                // next split at height
-                if (locY < currInternal.getY() + currInternal.getHeight() / 2) {
+                // next split at X
+                if (locX < currInternal.getXorig() + currInternal.getXwidth()
+                    / 2) {
                     currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                        city, locX, locY));
+                        insertObject));
                 }
                 else {
                     currInternal.setRight(recursiveInsert(currInternal
-                        .getRight(), city, locX, locY));
+                        .getRight(), insertObject));
                 }
             }
-
         }
-        // it is a leaf node, need to split and going down, conflict
-        else {
-            Leaf currLeaf = (Leaf)currNode;
-            if (matchNode(locX, locY, currLeaf)) {
-                throw new IllegalArgumentException();
-            }
-            InternalNode currInternal = new InternalNode(currNode.getLevel(),
-                currNode.getX(), currNode.getY(), currNode.getWidth(), currNode
-                    .getHeight());
-
-            currInternal = splitHelper(currInternal);
-            currInternal = insertHelper(currInternal, city, locX, locY);
-            currInternal = insertHelper(currInternal, currLeaf.getCity(),
-                currLeaf.getLocX(), currLeaf.getLocY());
-
-            return currInternal;
-
-        }
-        return currNode;
+        return curr;
     }
-    
+
+
     private boolean shouldSplit(LeafAirObject leaf, AirObject insertObject) {
-        if (leaf.getCurrNum() <= 3) return false;
+        if (leaf.getCurrNum() <= 3)
+            return false;
         AirObject[] container = leaf.getContainer();
         int overlapCount = 0;
         for (int i = 0; i < leaf.getCurrNum(); i++) {
@@ -133,230 +150,70 @@ public class BinTree {
                 overlapCount++;
             }
         }
-        
+
         return overlapCount < leaf.getCurrNum();
     }
-    
+
+
     private boolean overlap(AirObject object1, AirObject object2) {
         int object1maxX = object1.getXorig() + object1.getXwidth();
         int object1minX = object1.getXorig();
         int object2maxX = object2.getXorig() + object2.getXwidth();
         int object2minX = object2.getXorig();
-        
+
         int object1maxY = object1.getYorig() + object1.getYwidth();
         int object1minY = object1.getYorig();
         int object2maxY = object2.getYorig() + object2.getYwidth();
         int object2minY = object2.getYorig();
-        
+
         int object1maxZ = object1.getZorig() + object1.getZwidth();
         int object1minZ = object1.getZorig();
         int object2maxZ = object2.getZorig() + object2.getZwidth();
         int object2minZ = object2.getZorig();
-        
+
         return (object1maxX > object2minX || object1minX < object2maxX)
             && (object1maxY > object2minY || object1minY < object2maxY)
             && (object1maxZ > object2minZ || object1minZ < object2maxZ);
     }
 
 
-    private InternalNode splitHelper(InternalNode currInternal) {
-        int currLevel = currInternal.getLevel();
-        int currX = currInternal.getX();
-        int currY = currInternal.getY();
-        int currWidth = currInternal.getWidth();
-        int currHeight = currInternal.getHeight();
+    private InternalAirObject splitHelper(InternalAirObject currInternal) {
 
-        // split to two flyweights
-        FlyWeight leftWeight = new FlyWeight(currLevel + 1, currX, currY,
-            currWidth, currHeight);
-        FlyWeight rightWeight = new FlyWeight(currLevel + 1, currX, currY,
-            currWidth, currHeight);
+        int currLevel = currInternal.getLevel();
+        int currX = currInternal.getXorig();
+        int currY = currInternal.getYorig();
+        int currZ = currInternal.getZorig();
+        int xWidth = currInternal.getXwidth();
+        int yWidth = currInternal.getYwidth();
+        int zWidth = currInternal.getZwidth();
+
+        // split to two leafs
+        LeafAirObject leftWeight = new LeafAirObject(currX, currY, currZ,
+            xWidth, yWidth, zWidth, currLevel + 1);
+        LeafAirObject rightWeight = new LeafAirObject(currX, currY, currZ,
+            xWidth, yWidth, zWidth, currLevel + 1);
         currInternal.setLeft(leftWeight);
         currInternal.setRight(rightWeight);
 
-        if (currWidth == currHeight) {
-            // split on width
-            leftWeight.setWidth(currWidth / 2);
-            rightWeight.setWidth(currWidth / 2);
-            rightWeight.setX(currX + currWidth / 2);
+        if (xWidth < yWidth) {
+            // split on y
+            leftWeight.setyWidth(yWidth / 2);
+            rightWeight.setyWidth(yWidth / 2);
+            rightWeight.setyOrig(currY + yWidth / 2);
+        }
+        else if (yWidth < zWidth){
+            // split on z
+            leftWeight.setzWidth(zWidth / 2);
+            rightWeight.setzWidth(zWidth / 2);
+            rightWeight.setzOrig(currZ + zWidth / 2);
         }
         else {
-            // split on height
-            leftWeight.setHeight(currHeight / 2);
-            rightWeight.setHeight(currHeight / 2);
-            rightWeight.setY(currY + currHeight / 2);
+            // split on x
+            leftWeight.setxWidth(xWidth / 2);
+            rightWeight.setxWidth(xWidth / 2);
+            rightWeight.setxOrig(currX + xWidth / 2);
         }
-
         return currInternal;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * helper method for insert
-     * 
-     * @param currInternal
-     *            the current internal node
-     * @param city
-     *            the name of the city
-     * @param locX
-     *            X coordinate of city
-     * @param locY
-     *            Y coordinate of city
-     * @return currInternal
-     */
-    public InternalNode insertHelper(
-        InternalNode currInternal,
-        String city,
-        int locX,
-        int locY) {
-        int halfHeight = currInternal.getHeight() / 2;
-        int halfWidth = currInternal.getWidth() / 2;
-        if (currInternal.getHeight() == currInternal.getWidth()) {
-
-            if (currInternal.getX() + halfWidth > locX) {
-                // left node
-                currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                    city, locX, locY));
-            }
-            else {
-                currInternal.setRight(recursiveInsert(currInternal.getRight(),
-                    city, locX, locY));
-            }
-        }
-        else {
-            if (currInternal.getY() + halfHeight > locY) {
-                // left node
-                currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                    city, locX, locY));
-            }
-            else {
-                currInternal.setRight(recursiveInsert(currInternal.getRight(),
-                    city, locX, locY));
-            }
-        }
-
-        return currInternal;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Find if a match node
-     * 
-     * @param x
-     *            X coordinate of node
-     * @param y
-     *            Y coordinate of node
-     * @param node
-     *            leaf node
-     * @return if node matched
-     */
-    public boolean matchNode(int x, int y, Leaf node) {
-        return x == node.getLocX() && y == node.getLocY();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * find root node
-     * 
-     * @param x
-     *            X coordinate of node
-     * @param y
-     *            Y coordinate of node
-     * @return root node
-     */
-    public boolean find(int x, int y) {
-        return find(root, x, y);
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Find city
-     * 
-     * @param x
-     *            X coordinate of city
-     * @param y
-     *            Y coordinate of city
-     * @return city name
-     */
-    public String findCity(int x, int y) {
-        LinkedList<String> cityName = new LinkedList<>();
-        findCityName(root, x, y, cityName);
-        return cityName.getValue();
-    }
-
-
-    private void findCityName(
-        Node currNode,
-        int x,
-        int y,
-        LinkedList<String> cityName) {
-
-        if (currNode instanceof Leaf) {
-            if (matchNode(x, y, (Leaf)currNode)) {
-                Leaf currLeaf = (Leaf)currNode;
-                cityName.append(currLeaf.getCity());
-            }
-            else
-                return;
-        }
-        else if (currNode instanceof FlyWeight) {
-            return;
-        }
-        else {
-            InternalNode currInternal = (InternalNode)currNode;
-            findCityName(currInternal.getLeft(), x, y, cityName);
-            findCityName(currInternal.getRight(), x, y, cityName);
-        }
-    }
-
-
-    private boolean find(Node currNode, int x, int y) {
-
-        if (currNode instanceof Leaf) {
-            return (matchNode(x, y, (Leaf)currNode));
-
-        }
-        else if (currNode instanceof FlyWeight) {
-            return false;
-        }
-        else {
-            InternalNode currInternal = (InternalNode)currNode;
-            return find(currInternal.getLeft(), x, y) || find(currInternal
-                .getRight(), x, y);
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * region search method
-     * 
-     * @param startX
-     *            X coordinate of box
-     * @param startY
-     *            Y coordinate of box
-     * @param widthRange
-     *            width of box
-     * @param heightRange
-     *            height of box
-     * @return results
-     */
-    public LinkedList<Leaf> regionSearch(
-        int startX,
-        int startY,
-        int widthRange,
-        int heightRange) {
-        LinkedList<Leaf> results = new LinkedList<>();
-
-        regionSearchHelper(results, startX, startY, widthRange, heightRange,
-            root);
-        results.moveToStart();
-
-        return results;
     }
 
     private boolean insideRect(
@@ -370,110 +227,106 @@ public class BinTree {
             && y <= startY + heightRange;
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * counter to assist region search
-     * 
-     * @param startX
-     *            X coordinate of box
-     * @param startY
-     *            Y coordinate of box
-     * @param widthRange
-     *            width of box
-     * @param heightRange
-     *            height of box
-     * @return counter
-     */
-    public int regionSearchCounter(
-        int startX,
-        int startY,
-        int widthRange,
-        int heightRange) {
-
-        return regionSearchCounterHelper(root, startX, startY, widthRange,
-            heightRange);
-
-    }
-
-
-    private int regionSearchCounterHelper(
-        Node curr,
-        int startX,
-        int startY,
-        int widthRange,
-        int heightRange) {
-
-        if (curr instanceof Leaf) {
-            Leaf currLeaf = (Leaf)curr;
-            if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
-                startY, widthRange, heightRange)) {
-                return 1;
-            }
-            return 0;
-        }
-        if (curr instanceof FlyWeight) {
-            Node temp = new Node(0, startX, startY, widthRange, heightRange);
-            if (overlap(curr, temp)) {
-                return 1;
-            }
-            return 0;
-        }
-
-        Node temp = new Node(0, startX, startY, widthRange, heightRange);
-        InternalNode currInternal = (InternalNode)curr;
-        if (overlap(curr, temp)) {
-
-            return 1 + regionSearchCounterHelper(currInternal.getLeft(), startX,
-                startY, widthRange, heightRange) + regionSearchCounterHelper(
-                    currInternal.getRight(), startX, startY, widthRange,
-                    heightRange);
-        }
-        return 0;
-
-    }
-
-
-    private void regionSearchHelper(
-        LinkedList<Leaf> results,
-        int startX,
-        int startY,
-        int widthRange,
-        int heightRange,
-        Node curr) {
-        if (curr instanceof Leaf) {
-            Leaf currLeaf = (Leaf)curr;
-            if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
-                startY, widthRange, heightRange)) {
-                results.append(currLeaf);
-            }
-        }
-        else {
-            Node temp = new Node(0, startX, startY, widthRange, heightRange);
-            if (overlap(curr, temp)) {
-                if (curr instanceof InternalNode) {
-                    InternalNode currInternal = (InternalNode)curr;
-                    regionSearchHelper(results, startX, startY, widthRange,
-                        heightRange, currInternal.getLeft());
-                    regionSearchHelper(results, startX, startY, widthRange,
-                        heightRange, currInternal.getRight());
-                }
-            }
-        }
-    }
+//
+//    // ----------------------------------------------------------
+//    /**
+//     * counter to assist region search
+//     * 
+//     * @param startX
+//     *            X coordinate of box
+//     * @param startY
+//     *            Y coordinate of box
+//     * @param widthRange
+//     *            width of box
+//     * @param heightRange
+//     *            height of box
+//     * @return counter
+//     */
+//    public int regionSearchCounter(
+//        int startX,
+//        int startY,
+//        int widthRange,
+//        int heightRange) {
+//
+//        return regionSearchCounterHelper(root, startX, startY, widthRange,
+//            heightRange);
+//
+//    }
+//
+//
+//    private int regionSearchCounterHelper(
+//        Node curr,
+//        int startX,
+//        int startY,
+//        int widthRange,
+//        int heightRange) {
+//
+//        if (curr instanceof Leaf) {
+//            Leaf currLeaf = (Leaf)curr;
+//            if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
+//                startY, widthRange, heightRange)) {
+//                return 1;
+//            }
+//            return 0;
+//        }
+//        if (curr instanceof FlyWeight) {
+//            Node temp = new Node(0, startX, startY, widthRange, heightRange);
+//            if (overlap(curr, temp)) {
+//                return 1;
+//            }
+//            return 0;
+//        }
+//
+//        Node temp = new Node(0, startX, startY, widthRange, heightRange);
+//        InternalNode currInternal = (InternalNode)curr;
+//        if (overlap(curr, temp)) {
+//
+//            return 1 + regionSearchCounterHelper(currInternal.getLeft(), startX,
+//                startY, widthRange, heightRange) + regionSearchCounterHelper(
+//                    currInternal.getRight(), startX, startY, widthRange,
+//                    heightRange);
+//        }
+//        return 0;
+//
+//    }
+//
+//
+//    private void regionSearchHelper(
+//        LinkedList<Leaf> results,
+//        int startX,
+//        int startY,
+//        int widthRange,
+//        int heightRange,
+//        Node curr) {
+//        if (curr instanceof Leaf) {
+//            Leaf currLeaf = (Leaf)curr;
+//            if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
+//                startY, widthRange, heightRange)) {
+//                results.append(currLeaf);
+//            }
+//        }
+//        else {
+//            Node temp = new Node(0, startX, startY, widthRange, heightRange);
+//            if (overlap(curr, temp)) {
+//                if (curr instanceof InternalNode) {
+//                    InternalNode currInternal = (InternalNode)curr;
+//                    regionSearchHelper(results, startX, startY, widthRange,
+//                        heightRange, currInternal.getLeft());
+//                    regionSearchHelper(results, startX, startY, widthRange,
+//                        heightRange, currInternal.getRight());
+//                }
+//            }
+//        }
+//    }
 
 
     // ----------------------------------------------------------
     /**
      * remove a node
-     * 
-     * @param x
-     *            X coordinate of node
-     * @param y
-     *            Y coordinate of node
+     * @param object Air object to remove
      */
-    public void remove(int x, int y) {
-        root = remove(root, x, y);
+    public void remove(AirObject object) {
+        root = remove(root, object);
         root = garbageCollect(root);
     }
 
@@ -490,24 +343,23 @@ public class BinTree {
      *            Y coordinate of node
      * @return
      */
-    private Node remove(Node currNode, int x, int y) {
-        if (currNode instanceof Leaf) {
-            if (matchNode(x, y, (Leaf)currNode)) {
-                return new FlyWeight(currNode.getLevel(), currNode.getX(),
-                    currNode.getY(), currNode.getWidth(), currNode.getHeight());
+    // check if we have the remove object in skiplist before we call the remove
+    private AirObject remove(AirObject curr, AirObject removeObject) {
+        if (curr instanceof LeafAirObject) {
+            LeafAirObject currLeaf = (LeafAirObject)curr;
+            currLeaf.removeAirObject(removeObject);
+            if (currLeaf.isEmpty()) {
+                AirObject flyWeight = new AirObject();
+                curr = flyWeight;
             }
         }
-        else if (currNode instanceof FlyWeight) {
-            return currNode;
-        }
         else {
-            InternalNode currInternal = (InternalNode)currNode;
-            currInternal.setLeft(remove(currInternal.getLeft(), x, y));
-            currInternal.setRight(remove(currInternal.getRight(), x, y));
+            InternalAirObject currInternal = (InternalAirObject)curr;
+            currInternal.setLeft(remove(currInternal.getLeft(), removeObject));
+            currInternal.setRight(remove(currInternal.getRight(), removeObject));
         }
-        return currNode;
+        return curr;
     }
-
 
     /**
      * Remove all the branches that are not necessary
@@ -516,7 +368,7 @@ public class BinTree {
      *            current node
      * @return
      */
-    private Node garbageCollect(Node currNode) {
+    private AirObject garbageCollect(AirObject currNode) {
         if (currNode instanceof InternalNode) {
             InternalNode currInternal = (InternalNode)currNode;
             if (currInternal.getLeft() instanceof FlyWeight && currInternal
@@ -564,7 +416,7 @@ public class BinTree {
                     .getRight() instanceof FlyWeight) && !(currInternal
                         .getRight() instanceof Leaf && currInternal
                             .getLeft() instanceof FlyWeight);
-        
+
     }
 
 
