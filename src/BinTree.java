@@ -64,7 +64,8 @@ public class BinTree {
      * 
      * @param curr
      *            the current node
-     * @param insertObject Air object to insert
+     * @param insertObject
+     *            Air object to insert
      * @return Air object for recursion
      * @throws IllegalArgumentException
      */
@@ -201,7 +202,7 @@ public class BinTree {
             rightWeight.setyWidth(yWidth / 2);
             rightWeight.setyOrig(currY + yWidth / 2);
         }
-        else if (yWidth < zWidth){
+        else if (yWidth < zWidth) {
             // split on z
             leftWeight.setzWidth(zWidth / 2);
             rightWeight.setzWidth(zWidth / 2);
@@ -216,6 +217,7 @@ public class BinTree {
         return currInternal;
     }
 
+
     private boolean insideRect(
         int x,
         int y,
@@ -228,102 +230,104 @@ public class BinTree {
     }
 
 //
-//    // ----------------------------------------------------------
-//    /**
-//     * counter to assist region search
-//     * 
-//     * @param startX
-//     *            X coordinate of box
-//     * @param startY
-//     *            Y coordinate of box
-//     * @param widthRange
-//     *            width of box
-//     * @param heightRange
-//     *            height of box
-//     * @return counter
-//     */
-//    public int regionSearchCounter(
-//        int startX,
-//        int startY,
-//        int widthRange,
-//        int heightRange) {
+// // ----------------------------------------------------------
+// /**
+// * counter to assist region search
+// *
+// * @param startX
+// * X coordinate of box
+// * @param startY
+// * Y coordinate of box
+// * @param widthRange
+// * width of box
+// * @param heightRange
+// * height of box
+// * @return counter
+// */
+// public int regionSearchCounter(
+// int startX,
+// int startY,
+// int widthRange,
+// int heightRange) {
 //
-//        return regionSearchCounterHelper(root, startX, startY, widthRange,
-//            heightRange);
+// return regionSearchCounterHelper(root, startX, startY, widthRange,
+// heightRange);
 //
-//    }
-//
-//
-//    private int regionSearchCounterHelper(
-//        Node curr,
-//        int startX,
-//        int startY,
-//        int widthRange,
-//        int heightRange) {
-//
-//        if (curr instanceof Leaf) {
-//            Leaf currLeaf = (Leaf)curr;
-//            if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
-//                startY, widthRange, heightRange)) {
-//                return 1;
-//            }
-//            return 0;
-//        }
-//        if (curr instanceof FlyWeight) {
-//            Node temp = new Node(0, startX, startY, widthRange, heightRange);
-//            if (overlap(curr, temp)) {
-//                return 1;
-//            }
-//            return 0;
-//        }
-//
-//        Node temp = new Node(0, startX, startY, widthRange, heightRange);
-//        InternalNode currInternal = (InternalNode)curr;
-//        if (overlap(curr, temp)) {
-//
-//            return 1 + regionSearchCounterHelper(currInternal.getLeft(), startX,
-//                startY, widthRange, heightRange) + regionSearchCounterHelper(
-//                    currInternal.getRight(), startX, startY, widthRange,
-//                    heightRange);
-//        }
-//        return 0;
-//
-//    }
+// }
 //
 //
-//    private void regionSearchHelper(
-//        LinkedList<Leaf> results,
-//        int startX,
-//        int startY,
-//        int widthRange,
-//        int heightRange,
-//        Node curr) {
-//        if (curr instanceof Leaf) {
-//            Leaf currLeaf = (Leaf)curr;
-//            if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
-//                startY, widthRange, heightRange)) {
-//                results.append(currLeaf);
-//            }
-//        }
-//        else {
-//            Node temp = new Node(0, startX, startY, widthRange, heightRange);
-//            if (overlap(curr, temp)) {
-//                if (curr instanceof InternalNode) {
-//                    InternalNode currInternal = (InternalNode)curr;
-//                    regionSearchHelper(results, startX, startY, widthRange,
-//                        heightRange, currInternal.getLeft());
-//                    regionSearchHelper(results, startX, startY, widthRange,
-//                        heightRange, currInternal.getRight());
-//                }
-//            }
-//        }
-//    }
+// private int regionSearchCounterHelper(
+// Node curr,
+// int startX,
+// int startY,
+// int widthRange,
+// int heightRange) {
+//
+// if (curr instanceof Leaf) {
+// Leaf currLeaf = (Leaf)curr;
+// if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
+// startY, widthRange, heightRange)) {
+// return 1;
+// }
+// return 0;
+// }
+// if (curr instanceof FlyWeight) {
+// Node temp = new Node(0, startX, startY, widthRange, heightRange);
+// if (overlap(curr, temp)) {
+// return 1;
+// }
+// return 0;
+// }
+//
+// Node temp = new Node(0, startX, startY, widthRange, heightRange);
+// InternalNode currInternal = (InternalNode)curr;
+// if (overlap(curr, temp)) {
+//
+// return 1 + regionSearchCounterHelper(currInternal.getLeft(), startX,
+// startY, widthRange, heightRange) + regionSearchCounterHelper(
+// currInternal.getRight(), startX, startY, widthRange,
+// heightRange);
+// }
+// return 0;
+//
+// }
+//
+//
+// private void regionSearchHelper(
+// LinkedList<Leaf> results,
+// int startX,
+// int startY,
+// int widthRange,
+// int heightRange,
+// Node curr) {
+// if (curr instanceof Leaf) {
+// Leaf currLeaf = (Leaf)curr;
+// if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
+// startY, widthRange, heightRange)) {
+// results.append(currLeaf);
+// }
+// }
+// else {
+// Node temp = new Node(0, startX, startY, widthRange, heightRange);
+// if (overlap(curr, temp)) {
+// if (curr instanceof InternalNode) {
+// InternalNode currInternal = (InternalNode)curr;
+// regionSearchHelper(results, startX, startY, widthRange,
+// heightRange, currInternal.getLeft());
+// regionSearchHelper(results, startX, startY, widthRange,
+// heightRange, currInternal.getRight());
+// }
+// }
+// }
+// }
 
 
     // ----------------------------------------------------------
     /**
      * remove a node
-     * @param object Air object to remove
+     * 
+     * @param object
+     *            Air object to remove
      */
     public void remove(AirObject object) {
         root = remove(root, object);
@@ -356,10 +360,12 @@ public class BinTree {
         else {
             InternalAirObject currInternal = (InternalAirObject)curr;
             currInternal.setLeft(remove(currInternal.getLeft(), removeObject));
-            currInternal.setRight(remove(currInternal.getRight(), removeObject));
+            currInternal.setRight(remove(currInternal.getRight(),
+                removeObject));
         }
         return curr;
     }
+
 
     /**
      * Remove all the branches that are not necessary
@@ -369,32 +375,37 @@ public class BinTree {
      * @return
      */
     private AirObject garbageCollect(AirObject currNode) {
-        if (currNode instanceof InternalNode) {
-            InternalNode currInternal = (InternalNode)currNode;
-            if (currInternal.getLeft() instanceof FlyWeight && currInternal
-                .getRight() instanceof FlyWeight) {
-                return new FlyWeight(currInternal.getLevel(), currInternal
-                    .getX(), currInternal.getY(), currInternal.getWidth(),
-                    currInternal.getHeight());
+        if (currNode instanceof InternalAirObject) {
+            InternalAirObject currInternal = (InternalAirObject)currNode;
+            if (currInternal.getLeft() instanceof AirObject && currInternal
+                .getRight() instanceof AirObject) {
+                return new AirObject(currInternal.getXorig(), currInternal
+                    .getYorig(), currInternal.getZorig(), currInternal
+                        .getXwidth(), currInternal.getYwidth(), currInternal
+                            .getZwidth(), currInternal.getLevel());
             }
-            else if (currInternal.getLeft() instanceof FlyWeight && currInternal
-                .getRight() instanceof Leaf) {
-                Leaf currLeaf = (Leaf)currInternal.getRight();
+            else if (currInternal.getLeft() instanceof AirObject && currInternal
+                .getRight() instanceof LeafAirObject) {
+                LeafAirObject currLeaf = (LeafAirObject)currInternal.getRight();
                 currLeaf.setLevel(currInternal.getLevel());
-                currLeaf.setX(currInternal.getX());
-                currLeaf.setY(currInternal.getY());
-                currLeaf.setWidth(currInternal.getWidth());
-                currLeaf.setHeight(currInternal.getHeight());
+                currLeaf.setxOrig(currInternal.getXorig());
+                currLeaf.setyOrig(currInternal.getYorig());
+                currLeaf.setzOrig(currInternal.getZorig());
+                currLeaf.setxWidth(currInternal.getXwidth());
+                currLeaf.setyWidth(currInternal.getYwidth());
+                currLeaf.setzWidth(currInternal.getZwidth());
                 return currLeaf;
             }
-            else if (currInternal.getRight() instanceof FlyWeight
-                && currInternal.getLeft() instanceof Leaf) {
-                Leaf currLeaf = (Leaf)currInternal.getLeft();
+            else if (currInternal.getRight() instanceof AirObject
+                && currInternal.getLeft() instanceof LeafAirObject) {
+                LeafAirObject currLeaf = (LeafAirObject)currInternal.getLeft();
                 currLeaf.setLevel(currInternal.getLevel());
-                currLeaf.setX(currInternal.getX());
-                currLeaf.setY(currInternal.getY());
-                currLeaf.setWidth(currInternal.getWidth());
-                currLeaf.setHeight(currInternal.getHeight());
+                currLeaf.setxOrig(currInternal.getXorig());
+                currLeaf.setyOrig(currInternal.getYorig());
+                currLeaf.setzOrig(currInternal.getZorig());
+                currLeaf.setxWidth(currInternal.getXwidth());
+                currLeaf.setyWidth(currInternal.getYwidth());
+                currLeaf.setzWidth(currInternal.getZwidth());
                 return currLeaf;
             }
             else {
@@ -409,13 +420,13 @@ public class BinTree {
     }
 
 
-    private boolean garbageCollectHelper(InternalNode currInternal) {
-        return !(currInternal.getLeft() instanceof FlyWeight && currInternal
-            .getRight() instanceof FlyWeight) && !(currInternal
-                .getLeft() instanceof Leaf && currInternal
-                    .getRight() instanceof FlyWeight) && !(currInternal
-                        .getRight() instanceof Leaf && currInternal
-                            .getLeft() instanceof FlyWeight);
+    private boolean garbageCollectHelper(InternalAirObject currInternal) {
+        return !(currInternal.getLeft() instanceof AirObject && currInternal
+            .getRight() instanceof AirObject) && !(currInternal
+                .getLeft() instanceof LeafAirObject && currInternal
+                    .getRight() instanceof AirObject) && !(currInternal
+                        .getRight() instanceof LeafAirObject && currInternal
+                            .getLeft() instanceof AirObject);
 
     }
 
@@ -426,18 +437,18 @@ public class BinTree {
      * 
      * @return list
      */
-    public LinkedList<Node> preorderTraverse() {
-        LinkedList<Node> list = new LinkedList<>();
+    public LinkedList<AirObject> preorderTraverse() {
+        LinkedList<AirObject> list = new LinkedList<>();
         preorderHelper(root, list);
         list.moveToStart();
         return list;
     }
 
 
-    private void preorderHelper(Node currNode, LinkedList<Node> list) {
+    private void preorderHelper(AirObject currNode, LinkedList<AirObject> list) {
         list.append(currNode);
-        if (currNode instanceof InternalNode) {
-            InternalNode currInternal = (InternalNode)currNode;
+        if (currNode instanceof InternalAirObject) {
+            InternalAirObject currInternal = (InternalAirObject)currNode;
             preorderHelper(currInternal.getLeft(), list);
             preorderHelper(currInternal.getRight(), list);
         }

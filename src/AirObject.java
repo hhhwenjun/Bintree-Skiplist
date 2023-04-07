@@ -1,7 +1,7 @@
 /**
  * Air traffic control general object type interface
  * All tracked objects must have a bounding prism and a name
- * *
+ * We use plain AirObject as a flyweight
  * 
  * @author {Your Name Here}
  * @version {Put Something Here}
