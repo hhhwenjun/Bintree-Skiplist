@@ -216,110 +216,55 @@ public class BinTree {
         }
         return currInternal;
     }
-
-
-    private boolean insideRect(
-        int x,
-        int y,
+    
+    public LinkedList<AirObject> intersectRangeSearch(
         int startX,
         int startY,
-        int widthRange,
-        int heightRange) {
-        return x >= startX && y >= startY && x <= startX + widthRange
-            && y <= startY + heightRange;
+        int startZ,
+        int xRange,
+        int yRange,
+        int zRange) {
+        LinkedList<AirObject> results = new LinkedList<>();
+        AirObject rangeBox = new AirObject(startX, startY, startZ, xRange, yRange, zRange, 0);
+
+        regionSearchHelper(results, rangeBox, root);
+        results.moveToStart();
+
+        return results;
     }
 
-//
-// // ----------------------------------------------------------
-// /**
-// * counter to assist region search
-// *
-// * @param startX
-// * X coordinate of box
-// * @param startY
-// * Y coordinate of box
-// * @param widthRange
-// * width of box
-// * @param heightRange
-// * height of box
-// * @return counter
-// */
-// public int regionSearchCounter(
-// int startX,
-// int startY,
-// int widthRange,
-// int heightRange) {
-//
-// return regionSearchCounterHelper(root, startX, startY, widthRange,
-// heightRange);
-//
-// }
-//
-//
-// private int regionSearchCounterHelper(
-// Node curr,
-// int startX,
-// int startY,
-// int widthRange,
-// int heightRange) {
-//
-// if (curr instanceof Leaf) {
-// Leaf currLeaf = (Leaf)curr;
-// if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
-// startY, widthRange, heightRange)) {
-// return 1;
-// }
-// return 0;
-// }
-// if (curr instanceof FlyWeight) {
-// Node temp = new Node(0, startX, startY, widthRange, heightRange);
-// if (overlap(curr, temp)) {
-// return 1;
-// }
-// return 0;
-// }
-//
-// Node temp = new Node(0, startX, startY, widthRange, heightRange);
-// InternalNode currInternal = (InternalNode)curr;
-// if (overlap(curr, temp)) {
-//
-// return 1 + regionSearchCounterHelper(currInternal.getLeft(), startX,
-// startY, widthRange, heightRange) + regionSearchCounterHelper(
-// currInternal.getRight(), startX, startY, widthRange,
-// heightRange);
-// }
-// return 0;
-//
-// }
-//
-//
-// private void regionSearchHelper(
-// LinkedList<Leaf> results,
-// int startX,
-// int startY,
-// int widthRange,
-// int heightRange,
-// Node curr) {
-// if (curr instanceof Leaf) {
-// Leaf currLeaf = (Leaf)curr;
-// if (insideRect(currLeaf.getLocX(), currLeaf.getLocY(), startX,
-// startY, widthRange, heightRange)) {
-// results.append(currLeaf);
-// }
-// }
-// else {
-// Node temp = new Node(0, startX, startY, widthRange, heightRange);
-// if (overlap(curr, temp)) {
-// if (curr instanceof InternalNode) {
-// InternalNode currInternal = (InternalNode)curr;
-// regionSearchHelper(results, startX, startY, widthRange,
-// heightRange, currInternal.getLeft());
-// regionSearchHelper(results, startX, startY, widthRange,
-// heightRange, currInternal.getRight());
-// }
-// }
-// }
-// }
+    private void regionSearchHelper(
+        LinkedList<AirObject> results,
+        AirObject box,
+        AirObject curr) {
+        if (curr instanceof LeafAirObject) {
+            LeafAirObject currLeaf = (LeafAirObject)curr;
+            AirObject[] container = currLeaf.getContainer();
+            for (int i = 0; i < currLeaf.getCurrNum(); i++) {
+                if (overlap(container[i], box)) {
+                    results.append(container[i]);
+                }
+            }
+        }
+        else {
+            // internal object
+            if (overlap(curr, box)) {
+                InternalAirObject currInternal = (InternalAirObject)curr;
+                regionSearchHelper(results, box, currInternal.getLeft());
+                regionSearchHelper(results, box, currInternal.getRight());
+            }
+        }
+    }
+    
+    /**
+     * get all the collisions in the bin tree
+     *  
+     * @return List of collision objects
+     */
+    public LinkedList<Pair<AirObject,AirObject>> getCollisions(){
+        LinkedList<Pair<AirObject,AirObject>> results = new LinkedList<>();
+        return results;
+    }
 
 
     // ----------------------------------------------------------
@@ -445,12 +390,50 @@ public class BinTree {
     }
 
 
-    private void preorderHelper(AirObject currNode, LinkedList<AirObject> list) {
+    private void preorderHelper(
+        AirObject currNode,
+        LinkedList<AirObject> list) {
         list.append(currNode);
+        
         if (currNode instanceof InternalAirObject) {
             InternalAirObject currInternal = (InternalAirObject)currNode;
             preorderHelper(currInternal.getLeft(), list);
             preorderHelper(currInternal.getRight(), list);
+        }
+        else {
+            // this is a leaf air object
+            LeafAirObject currLeaf = (LeafAirObject)currNode;
+            AirObject[] container = currLeaf.getContainer();
+            for (int i = 0; i < currLeaf.getCurrNum(); i++) {
+                list.append(container[i]);
+            }
+        }
+    }
+    
+    static class Pair<K, V> {
+        
+        K left;
+        V right;
+        
+        public Pair(K left, V right) {
+            this.left = left;
+            this.right = right;
+        }
+        
+        public K getLeft() {
+            return left;
+        }
+        
+        public V getRight() {
+            return right;
+        }
+        
+        public void setLeft(K left) {
+            this.left = left;
+        }
+        
+        public void setRight(V right) {
+            this.right = right;
         }
     }
 
