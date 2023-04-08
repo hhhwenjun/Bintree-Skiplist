@@ -3,8 +3,8 @@ import java.util.NoSuchElementException;
 /**
  * A doubly LinkedList that implement list interface
  * 
- * @author Wenjun Han
- * @version 2022.1.28
+ * @author Xuhui Zeng
+ * @version 2023.04.08
  * @param <T>
  *            The data type
  */
