@@ -47,6 +47,11 @@ public class SkipList<K extends Comparable<K>, E> {
         return size;
     }
 
+    public void clear() {
+        head = new SkipNode<>(null, null, 0);
+        level = -1;
+        size = 0;
+    }
 
     /**
      * Search the element with key
@@ -191,15 +196,69 @@ public class SkipList<K extends Comparable<K>, E> {
         // print the first head node
         System.out.println("Node has depth " + x.forward().length + ", "
             + "Value (" + x.key() + ")");
+        int traverseNum = 0;
         while (x.forward()[0] != null) {
             x = x.forward()[0];
-            RectangleInfo element = (RectangleInfo)x.element(); // x.getLevel()
+            AirObject element = (AirObject)x.element(); // x.getLevel()
+            LinkedList<String> objectInfo = getAirInfo(element);
+            objectInfo.moveToStart();
+            String infoString = "";
+            while(!objectInfo.isAtEnd()) {
+                infoString += objectInfo.getValue();
+                objectInfo.next();
+                infoString += " ";
+            }
             System.out.println("Node has depth " + x.forward().length + ", "
-                + "Value (" + element.getName() + ", " + element
-                    .printRectangleDim() + ")");
-
+                + "Value (" + infoString + ")");
+            traverseNum++;
         }
-        System.out.println("SkipList size is: " + size);
+        System.out.println(traverseNum + " skiplist nodes printed");
     }
 
+
+    private LinkedList<String> getAirInfo(AirObject object) {
+
+        LinkedList<String> info = new LinkedList<>();
+        info.moveToStart();
+        info.append(object.getObjectType());
+        if (object.getObjectType().equals(AirObject.AirObject)) {
+            return info;
+        }
+        info.append(String.valueOf(object.getXorig()));
+        info.append(String.valueOf(object.getYorig()));
+        info.append(String.valueOf(object.getZorig()));
+        info.append(String.valueOf(object.getXwidth()));
+        info.append(String.valueOf(object.getYwidth()));
+        info.append(String.valueOf(object.getZwidth()));
+
+        switch (object.getObjectType()) {
+            case AirObject.Balloon:
+                Balloon balloon = (Balloon)object;
+                info.append(balloon.getType());
+                info.append(String.valueOf(balloon.getAscentRate()));
+                break;
+            case AirObject.Airplane:
+                Airplane airplane = (Airplane)object;
+                info.append(airplane.getCarrier());
+                info.append(String.valueOf(airplane.getFlightNum()));
+                info.append(String.valueOf(airplane.getEngineNum()));
+                break;
+            case AirObject.Bird:
+                Bird bird = (Bird)object;
+                info.append(bird.getType());
+                info.append(String.valueOf(bird.getNumber()));
+                break;
+            case AirObject.Drone:
+                Drone drone = (Drone)object;
+                info.append(drone.getBrand());
+                info.append(String.valueOf(drone.getEngineNum()));
+                break;
+            case AirObject.Rocket:
+                Rocket rocket = (Rocket)object;
+                info.append(String.valueOf(rocket.getAscentRate()));
+                info.append(String.format("%.2f", rocket.getTrajectory()));
+                break;
+        }
+        return info;
+    }
 }
