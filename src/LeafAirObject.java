@@ -17,12 +17,29 @@ public class LeafAirObject extends AirObject {
         container = new AirObject[10];
         numOfObject = 0;
     }
+    
+    /**
+     *  Bubble sort
+     */
+    private void sort() {
+        for (int i = 0; i < numOfObject - 1; i++) {
+            for (int j = 0; j < numOfObject - i - 1; j++) {
+                if (container[j].compareTo(container[j + 1]) > 0) {
+                    // swap 
+                    AirObject temp = container[j];
+                    container[j] = container[j + 1];
+                    container[j + 1] = temp;
+                }
+            }
+        }
+    }
 
 
     public void addAirObject(AirObject airObject) {
         enlargeCapacity();
         container[numOfObject] = airObject;
         numOfObject++;
+        sort();
     }
     
     public void removeAirObject(AirObject airObject) {
