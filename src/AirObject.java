@@ -1,7 +1,7 @@
 /**
  * Air traffic control general object type interface
  * All tracked objects must have a bounding prism and a name
- * *
+ * We use plain AirObject as a flyweight
  * 
  * @author Xuhui Zeng
  * @version 2023.03.26
@@ -9,17 +9,49 @@
  */
 
 public class AirObject implements Comparable<AirObject> {
+
+    private int xOrig;
+    private int yOrig;
+    private int zOrig;
+    
+    private int xWidth;
+    private int yWidth;
+    private int zWidth;
+    
+    private int level;
+
     private String name; // Name for this AirObject
+    protected static final String AirObject = "null";
+    protected static final String Balloon = "Balloon";
+    protected static final String Rocket = "Rocket";
+    protected static final String Drone = "Drone";
+    protected static final String Bird = "Bird";
+    protected static final String Airplane = "Airplane";
 
     /**
      * Constructor for base AirObject
      * 
-     * @param inname
+     * @param name
      *            The object's name
      *
      */
-    public AirObject(String inname) {
-        name = inname;
+    public AirObject(String name) {
+        this.name = name;
+    }
+    
+    public AirObject() {
+        this.level = 0; // empty flyweight
+    }
+    
+    public AirObject(int xOrig, int yOrig, int zOrig, int xWidth, int yWidth, int zWidth, int level) {
+        
+        this.level = level;
+        this.xOrig = xOrig;
+        this.yOrig = yOrig;
+        this.zOrig = zOrig;
+        this.xWidth = xWidth;
+        this.yWidth = yWidth;
+        this.zWidth = zWidth;
     }
 
 
@@ -29,9 +61,8 @@ public class AirObject implements Comparable<AirObject> {
      * @return x origin
      */
     public int getXorig() {
-        return 0;
+        return xOrig;
     }
-
 
     /**
      * Getter for x width
@@ -39,9 +70,8 @@ public class AirObject implements Comparable<AirObject> {
      * @return x width
      */
     public int getXwidth() {
-        return 0;
+        return xWidth;
     }
-
 
     /**
      * Getter for y origin
@@ -49,9 +79,8 @@ public class AirObject implements Comparable<AirObject> {
      * @return y origin
      */
     public int getYorig() {
-        return 0;
+        return yOrig;
     }
-
 
     /**
      * Getter for y width
@@ -60,9 +89,8 @@ public class AirObject implements Comparable<AirObject> {
      */
 
     public int getYwidth() {
-        return 0;
+        return yWidth;
     }
-
 
     /**
      * Getter for z origin
@@ -70,9 +98,8 @@ public class AirObject implements Comparable<AirObject> {
      * @return z origin
      */
     public int getZorig() {
-        return 0;
+        return zOrig;
     }
-
 
     /**
      * Getter for z width
@@ -81,7 +108,7 @@ public class AirObject implements Comparable<AirObject> {
      */
 
     public int getZwidth() {
-        return 0;
+        return zWidth;
     }
 
 
@@ -95,6 +122,45 @@ public class AirObject implements Comparable<AirObject> {
     }
 
 
+    public void setxOrig(int xOrig) {
+        this.xOrig = xOrig;
+    }
+
+
+    public void setyOrig(int yOrig) {
+        this.yOrig = yOrig;
+    }
+
+
+    public void setzOrig(int zOrig) {
+        this.zOrig = zOrig;
+    }
+
+
+    public void setxWidth(int xWidth) {
+        this.xWidth = xWidth;
+    }
+
+
+    public void setyWidth(int yWidth) {
+        this.yWidth = yWidth;
+    }
+
+
+    public void setzWidth(int zWidth) {
+        this.zWidth = zWidth;
+    }
+    
+    
+    public int getLevel() {
+        return level;
+    }
+
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     /**
      * Compare against a (name) String.
      *
@@ -105,5 +171,13 @@ public class AirObject implements Comparable<AirObject> {
      */
     public int compareTo(AirObject it) {
         return name.compareTo(it.getName());
+    }
+    
+    /**
+     * Use it as a fly weight
+     * @return null string
+     */
+    public String getObjectType() {
+        return AirObject;
     }
 }
