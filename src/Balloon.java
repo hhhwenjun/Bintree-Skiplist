@@ -23,5 +23,9 @@ public class Balloon extends AirObject {
     public void setAscentRate(int ascentRate) {
         this.ascentRate = ascentRate;
     }
+    
+    public String getObjectType() {
+        return Balloon;
+    }
 
 }

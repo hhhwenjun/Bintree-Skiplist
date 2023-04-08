@@ -32,5 +32,9 @@ public class Airplane extends AirObject {
     public void setEngineNum(int engineNum) {
         this.engineNum = engineNum;
     }
+    
+    public String getObjectType() {
+        return Airplane;
+    }
 
 }

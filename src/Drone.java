@@ -23,5 +23,7 @@ public class Drone extends AirObject {
         this.engineNum = engineNum;
     }
 
-    
+    public String getObjectType() {
+        return Drone;
+    }
 }

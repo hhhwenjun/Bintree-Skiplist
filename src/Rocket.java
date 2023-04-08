@@ -25,4 +25,8 @@ public class Rocket extends AirObject {
         this.trajectory = trajectory;
     }
     
+    public String getObjectType() {
+        return Rocket;
+    }
+    
 }
