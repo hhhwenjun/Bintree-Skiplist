@@ -21,6 +21,12 @@ public class AirObject implements Comparable<AirObject> {
     private int level;
 
     private String name; // Name for this AirObject
+    protected static final String AirObject = "null";
+    protected static final String Balloon = "Balloon";
+    protected static final String Rocket = "Rocket";
+    protected static final String Drone = "Drone";
+    protected static final String Bird = "Bird";
+    protected static final String Airplane = "Airplane";
 
     /**
      * Constructor for base AirObject
@@ -165,5 +171,13 @@ public class AirObject implements Comparable<AirObject> {
      */
     public int compareTo(AirObject it) {
         return name.compareTo(it.getName());
+    }
+    
+    /**
+     * Use it as a fly weight
+     * @return null string
+     */
+    public String getObjectType() {
+        return AirObject;
     }
 }

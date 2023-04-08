@@ -23,5 +23,9 @@ public class Bird extends AirObject {
     public void setNumber(int number) {
         this.number = number;
     }
+    
+    public String getObjectType() {
+        return Bird;
+    }
 
 }
