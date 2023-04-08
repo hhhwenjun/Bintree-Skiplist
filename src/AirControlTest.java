@@ -1,8 +1,8 @@
 import student.TestCase;
 
 /**
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * @author Xuhui Zeng
+ * @version 2023.03.26
  */
 public class AirControlTest extends TestCase {
     /**

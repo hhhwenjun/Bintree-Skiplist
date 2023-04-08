@@ -3,8 +3,8 @@
  * All tracked objects must have a bounding prism and a name
  * We use plain AirObject as a flyweight
  * 
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * @author Xuhui Zeng
+ * @version 2023.03.26
  * 
  */
 
