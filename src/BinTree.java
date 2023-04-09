@@ -1,6 +1,9 @@
-
 /**
  * The bin tree structure
+ * 
+ * @author Xuhui Zeng
+ * @version 2023.04.08
+ * 
  */
 public class BinTree {
 
@@ -40,6 +43,7 @@ public class BinTree {
      * Throws when the data is null
      * 
      * @param airObject
+     *            a general AirProject
      * @throws IllegalArgumentException
      */
     public void insert(AirObject airObject) throws IllegalArgumentException {
@@ -218,6 +222,24 @@ public class BinTree {
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Search intersect range
+     * 
+     * @param startX
+     *            x coordinate of starting point
+     * @param startY
+     *            y coordinate of starting point
+     * @param startZ
+     *            z coordinate of starting point
+     * @param xRange
+     *            search range on x direction
+     * @param yRange
+     *            search range on y direction
+     * @param zRange
+     *            search range on z direction
+     * @return results
+     */
     public LinkedList<AirObject> intersectRangeSearch(
         AirObject rangeBox) {
         LinkedList<AirObject> results = new LinkedList<>();
@@ -253,6 +275,24 @@ public class BinTree {
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Counter for intersect region search
+     * 
+     * @param startX
+     *            x coordinate of starting point
+     * @param startY
+     *            y coordinate of starting point
+     * @param startZ
+     *            z coordinate of starting point
+     * @param xRange
+     *            search range on x direction
+     * @param yRange
+     *            search range on y direction
+     * @param zRange
+     *            search range on z direction
+     * @return counter
+     */
     public int intersectRegionSearchCounter(
         AirObject rangeBox) {
 
@@ -292,7 +332,8 @@ public class BinTree {
         collisionHelper(root, results);
         return results;
     }
-    
+
+
     private void collisionHelper(
         AirObject currNode,
         LinkedList<Pair<AirObject, AirObject>> list) {
@@ -462,32 +503,74 @@ public class BinTree {
         }
     }
 
+    // -------------------------------------------------------------------------
+    /**
+     * Support class for pair
+     * 
+     * @param <K>
+     *            generic type
+     * @param <V>
+     *            generic type
+     * 
+     * @author Xuhui Zeng
+     * @version 2023.04.08
+     */
     static class Pair<K, V> {
 
+        /**
+         * left object
+         */
         K left;
+        /**
+         * right object
+         */
         V right;
 
+        /**
+         * Create a new Pair object.
+         * 
+         * @param left
+         *            left object
+         * @param right
+         *            right object
+         */
         public Pair(K left, V right) {
             this.left = left;
             this.right = right;
         }
 
 
+        /**
+         * Getter for left object
+         * @return left
+         */
         public K getLeft() {
             return left;
         }
 
 
+        /**
+         * Getter for right object
+         * @return right
+         */
         public V getRight() {
             return right;
         }
 
 
+        /**
+         * Setter for left object
+         * @param left left object
+         */
         public void setLeft(K left) {
             this.left = left;
         }
 
 
+        /**
+         * Setter for right object
+         * @param right right object
+         */
         public void setRight(V right) {
             this.right = right;
         }
