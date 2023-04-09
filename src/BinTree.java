@@ -226,22 +226,12 @@ public class BinTree {
     /**
      * Search intersect range
      * 
-     * @param startX
-     *            x coordinate of starting point
-     * @param startY
-     *            y coordinate of starting point
-     * @param startZ
-     *            z coordinate of starting point
-     * @param xRange
-     *            search range on x direction
-     * @param yRange
-     *            search range on y direction
-     * @param zRange
-     *            search range on z direction
+     * @param rangeBox
+     *            intersect range box
+     * 
      * @return results
      */
-    public LinkedList<AirObject> intersectRangeSearch(
-        AirObject rangeBox) {
+    public LinkedList<AirObject> intersectRangeSearch(AirObject rangeBox) {
         LinkedList<AirObject> results = new LinkedList<>();
 
         regionSearchHelper(results, rangeBox, root);
@@ -279,22 +269,12 @@ public class BinTree {
     /**
      * Counter for intersect region search
      * 
-     * @param startX
-     *            x coordinate of starting point
-     * @param startY
-     *            y coordinate of starting point
-     * @param startZ
-     *            z coordinate of starting point
-     * @param xRange
-     *            search range on x direction
-     * @param yRange
-     *            search range on y direction
-     * @param zRange
-     *            search range on z direction
+     * @param rangeBox
+     *            intersect range box
+     * 
      * @return counter
      */
-    public int intersectRegionSearchCounter(
-        AirObject rangeBox) {
+    public int intersectRegionSearchCounter(AirObject rangeBox) {
 
         return regionSearchCounterHelper(rangeBox, root);
 
@@ -542,6 +522,7 @@ public class BinTree {
 
         /**
          * Getter for left object
+         * 
          * @return left
          */
         public K getLeft() {
@@ -551,6 +532,7 @@ public class BinTree {
 
         /**
          * Getter for right object
+         * 
          * @return right
          */
         public V getRight() {
@@ -560,7 +542,9 @@ public class BinTree {
 
         /**
          * Setter for left object
-         * @param left left object
+         * 
+         * @param left
+         *            left object
          */
         public void setLeft(K left) {
             this.left = left;
@@ -569,7 +553,9 @@ public class BinTree {
 
         /**
          * Setter for right object
-         * @param right right object
+         * 
+         * @param right
+         *            right object
          */
         public void setRight(V right) {
             this.right = right;
