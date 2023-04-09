@@ -5,8 +5,8 @@ import student.TestCase;
 /**
  * Test cases for LinkedList class, codes from my 1st project
  * 
- * @author Wenjun Han
- * @version 2022.1.28
+ * @author Xuhui Zeng
+ * @version 2023.04.08
  */
 public class LinkedListTest extends TestCase {
 
