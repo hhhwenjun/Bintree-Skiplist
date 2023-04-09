@@ -1,6 +1,9 @@
-
 /**
  * The bin tree structure
+ * 
+ * @author Xuhui Zeng
+ * @version 2023.04.08
+ * 
  */
 public class BinTree {
 
@@ -10,8 +13,9 @@ public class BinTree {
      * The constructor of the tree
      */
     public BinTree() {
-        root = new AirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at level
-                                                            // 0
+        root = new LeafAirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at
+                                                                // level
+        // 0
     }
 
 
@@ -19,8 +23,9 @@ public class BinTree {
      * clear the tree
      */
     public void clear() {
-        root = new AirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at level
-                                                            // 0
+        root = new LeafAirObject(0, 0, 0, 1024, 1024, 1024, 0); // default at
+                                                                // level
+        // 0
     }
 
 
@@ -31,7 +36,10 @@ public class BinTree {
      *         leaf or internal airObject
      */
     public boolean isEmpty() {
-        return (root instanceof AirObject);
+        if (root instanceof InternalAirObject)
+            return false;
+        LeafAirObject rootLeaf = (LeafAirObject)root;
+        return rootLeaf.getCurrNum() == 0;
     }
 
 
@@ -40,11 +48,11 @@ public class BinTree {
      * Throws when the data is null
      * 
      * @param airObject
+     *            a general AirProject
      * @throws IllegalArgumentException
      */
     public void insert(AirObject airObject) throws IllegalArgumentException {
         if (isEmpty()) {
-            root = new LeafAirObject(0, 0, 0, 1024, 1024, 1024, 0);
             // current root is a leaf, only contain the newly inserted air
             // object
             LeafAirObject currRoot = (LeafAirObject)root;
@@ -218,8 +226,16 @@ public class BinTree {
     }
 
 
-    public LinkedList<AirObject> intersectRangeSearch(
-        AirObject rangeBox) {
+    // ----------------------------------------------------------
+    /**
+     * Search intersect range
+     * 
+     * @param rangeBox
+     *            intersect range box
+     * 
+     * @return results
+     */
+    public LinkedList<AirObject> intersectRangeSearch(AirObject rangeBox) {
         LinkedList<AirObject> results = new LinkedList<>();
 
         regionSearchHelper(results, rangeBox, root);
@@ -233,6 +249,7 @@ public class BinTree {
         LinkedList<AirObject> results,
         AirObject box,
         AirObject curr) {
+
         if (curr instanceof LeafAirObject) {
             LeafAirObject currLeaf = (LeafAirObject)curr;
             AirObject[] container = currLeaf.getContainer();
@@ -253,8 +270,16 @@ public class BinTree {
     }
 
 
-    public int intersectRegionSearchCounter(
-        AirObject rangeBox) {
+    // ----------------------------------------------------------
+    /**
+     * Counter for intersect region search
+     * 
+     * @param rangeBox
+     *            intersect range box
+     * 
+     * @return counter
+     */
+    public int intersectRegionSearchCounter(AirObject rangeBox) {
 
         return regionSearchCounterHelper(rangeBox, root);
 
@@ -292,7 +317,8 @@ public class BinTree {
         collisionHelper(root, results);
         return results;
     }
-    
+
+
     private void collisionHelper(
         AirObject currNode,
         LinkedList<Pair<AirObject, AirObject>> list) {
@@ -436,6 +462,7 @@ public class BinTree {
         LinkedList<AirObject> list = new LinkedList<>();
         preorderHelper(root, list);
         list.moveToStart();
+
         return list;
     }
 
@@ -444,7 +471,6 @@ public class BinTree {
         AirObject currNode,
         LinkedList<AirObject> list) {
         list.append(currNode);
-
         if (currNode instanceof InternalAirObject) {
             InternalAirObject currInternal = (InternalAirObject)currNode;
             list.append(currInternal);
@@ -461,36 +487,86 @@ public class BinTree {
             }
         }
     }
-
-    static class Pair<K, V> {
-
-        K left;
-        V right;
-
-        public Pair(K left, V right) {
-            this.left = left;
-            this.right = right;
-        }
+}
 
 
-        public K getLeft() {
-            return left;
-        }
 
 
-        public V getRight() {
-            return right;
-        }
+// -------------------------------------------------------------------------
+/**
+ * Support class for pair
+ * 
+ * @param <K>
+ *            generic type
+ * @param <V>
+ *            generic type
+ * 
+ * @author Xuhui Zeng
+ * @version 2023.04.08
+ */
+class Pair<K, V> {
 
+    /**
+     * left object
+     */
+    K left;
+    /**
+     * right object
+     */
+    V right;
 
-        public void setLeft(K left) {
-            this.left = left;
-        }
-
-
-        public void setRight(V right) {
-            this.right = right;
-        }
+    /**
+     * Create a new Pair object.
+     * 
+     * @param left
+     *            left object
+     * @param right
+     *            right object
+     */
+    public Pair(K left, V right) {
+        this.left = left;
+        this.right = right;
     }
 
+
+    /**
+     * Getter for left object
+     * 
+     * @return left
+     */
+    public K getLeft() {
+        return left;
+    }
+
+
+    /**
+     * Getter for right object
+     * 
+     * @return right
+     */
+    public V getRight() {
+        return right;
+    }
+
+
+    /**
+     * Setter for left object
+     * 
+     * @param left
+     *            left object
+     */
+    public void setLeft(K left) {
+        this.left = left;
+    }
+
+
+    /**
+     * Setter for right object
+     * 
+     * @param right
+     *            right object
+     */
+    public void setRight(V right) {
+        this.right = right;
+    }
 }

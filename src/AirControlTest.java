@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import student.TestCase;
 
 /**
@@ -9,33 +10,36 @@ public class AirControlTest extends TestCase {
      * Sets up the tests that follow. In general, used for initialization
      */
     public void setUp() {
-        // Nothing Here
+        
     }
 
 
     /**
      * Get code coverage of the class declaration.
+     * @throws FileNotFoundException 
      */
-    public void testRInit() {
+    public void testRInit() throws FileNotFoundException {
         AirControl recstore = new AirControl();
         assertNotNull(recstore);
-        AirControl.main(null);
+        try {
+            AirControl.main(new String[]{"abc"});
+        }
+        catch (Exception e) {
+            assertTrue(e instanceof FileNotFoundException);
+        }
     }
 
 
     /**
      * Get code coverage for AirObject class
+     * @throws FileNotFoundException 
      */
-    public void testAO() {
-        AirObject ao = new AirObject("myName");
-        AirObject ao2 = new AirObject("myName2");
-        assertTrue((ao.getName()).equals("myName"));
-        assertEquals(ao.getXorig(), 0);
-        assertEquals(ao.getYorig(), 0);
-        assertEquals(ao.getZorig(), 0);
-        assertEquals(ao.getXwidth(), 0);
-        assertEquals(ao.getYwidth(), 0);
-        assertEquals(ao.getZwidth(), 0);
-        assertTrue(ao.compareTo(ao2) < 0);
+    public void testAO() throws FileNotFoundException {
+        AirControl controller = new AirControl();
+        assertNotNull(controller);
+        AirControl.main(new String[] {"Sample Input.txt"});
+        assertTrue(contains(systemOut().getHistory(), "Error in rangeprint parameters: |z| is not less than |a|"));
+        assertTrue(contains(systemOut().getHistory(), "(Airplane Air1 0 10 1 20 2 30 USAir 717 4)"));
+        System.out.println("End of test Input***********************");
     }
 }

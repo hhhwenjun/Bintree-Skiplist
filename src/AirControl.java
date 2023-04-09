@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+
 /**
  * Implement a small piece in an air traffic control system to track the
  * locations of many objects and determining if any are at risk of colliding
@@ -32,10 +34,14 @@
 
 public class AirControl {
     /**
+     * This is the entry point of the application
+     * 
      * @param args
-     *            Command line parameters
+     *            Command line arguments
+     * @throws FileNotFoundException
      */
-    public static void main(String[] args) {
-        // This is the main file for the program.
+    public static void main(String[] args) throws FileNotFoundException {
+        TextReader reader = new TextReader();
+        reader.readFile(args[0]);
     }
 }

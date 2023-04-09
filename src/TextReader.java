@@ -1,4 +1,5 @@
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -60,10 +61,12 @@ public class TextReader {
 
 
     private boolean rangeHelper(AirObject obj) {
-        return obj.getXorig() <= 1023 && obj.getYorig() <= 1023 && obj
-            .getZorig() <= 1023 && obj.getXorig() + obj.getXwidth() >= 0 && obj
+        return obj.getXorig() <= 1024 && obj.getYorig() <= 1024 && obj
+            .getZorig() <= 1024 && obj.getXorig() + obj.getXwidth() >= 0 && obj
                 .getYorig() + obj.getYwidth() >= 0 && obj.getZorig() + obj
-                    .getZwidth() >= 0;
+                    .getZwidth() >= 0 && obj.getXorig() + obj.getXwidth() <= 1024 && obj
+                        .getYorig() + obj.getYwidth() <= 1024 && obj.getZorig() + obj
+                        .getZwidth() <= 1024;
 
     }
 
@@ -88,24 +91,27 @@ public class TextReader {
         String operator = data[0];
         if (operator.equals("add")) {
             AirObject addObj = addHelper(data);
-            String objName = data[1];
+            String objName = data[2];
 
             // bad boxes
             String badBox = "Bad box (" + addObj.getXorig() + " " + addObj
                 .getYorig() + " " + addObj.getZorig() + " " + addObj.getXwidth()
                 + " " + addObj.getYwidth() + " " + addObj.getZwidth() + ").";
+            if (!widthPositive(addObj)) {
+                System.out.println(badBox + " All widths must be positive.");
+                return;
+            }
+            
             if (!rangeHelper(addObj)) {
                 System.out.println(badBox
                     + " All boxes must be entirely within the world box.");
+                return;
             }
-            if (!widthPositive(addObj)) {
-                System.out.println(badBox
-                    + " All widths must be positive.");
-            }
-
+            
             // already has the object w/ same name
             if (skiplist.find(objName) != null) {
-                System.out.println("Duplicate object names not permitted: |" + objName + "|");
+                System.out.println("Duplicate object names not permitted: |"
+                    + objName + "|");
                 return;
             }
 
@@ -120,7 +126,8 @@ public class TextReader {
             // object not found
             AirObject removeObj = skiplist.find(objName);
             if (removeObj == null) {
-                System.out.println("Object |" + objName + "| not in the database");
+                System.out.println("Object |" + objName
+                    + "| not in the database");
                 return;
             }
             tree.remove(removeObj);
@@ -135,14 +142,15 @@ public class TextReader {
             // object not found
             AirObject findObj = skiplist.find(objName);
             if (findObj == null) {
-                System.out.println("|" + objName + "| does not exist in the database");
+                System.out.println("|" + objName
+                    + "| does not exist in the database");
                 return;
             }
 
             LinkedList<String> airInfo = SkipList.getAirInfo(findObj);
             String info = "";
             airInfo.moveToStart();
-            while(!airInfo.isAtEnd()) {
+            while (!airInfo.isAtEnd()) {
                 info += airInfo.getValue();
                 info += " ";
             }
@@ -150,111 +158,237 @@ public class TextReader {
             System.out.println("Found: " + info);
 
         }
-        // TODO: intersect and other print operations
         else if (operator.equals("intersect")) {
             int x = Integer.valueOf(data[1]);
             int y = Integer.valueOf(data[2]);
-            int w = Integer.valueOf(data[3]);
-            int h = Integer.valueOf(data[4]);
-            System.out.println(">regionsearch " + x + " " + y + " " + w + " "
-                + h);
-            if (!rangeHelper(x, y, w, h)) {
+            int z = Integer.valueOf(data[3]);
+            int xWidth = Integer.valueOf(data[4]);
+            int yWidth = Integer.valueOf(data[5]);
+            int zWidth = Integer.valueOf(data[6]);
+            AirObject rangeBox = new AirObject(x, y, z, xWidth, yWidth, zWidth,
+                0); // no level, empty rangeBox representation
+
+            if (!rangeHelper(rangeBox)) {
                 System.out.println(
-                    "The specified region is outside the world.");
+                    "All boxes must be entirely within the world box.");
                 return;
             }
-            else {
-                LinkedList<Leaf> results = tree.regionSearch(x, y, w, h);
-                int length = results.length();
-                results.moveToStart();
-                for (int i = 0; i < length; i++) {
-                    System.out.println(results.getValue().getCity() + " "
-                        + results.getValue().getLocX() + " " + results
-                            .getValue().getLocY());
-                    results.next();
-
-                }
-
-                System.out.println(tree.regionSearchCounter(x, y, w, h) + " "
-                    + "nodes visited");
+            if (!widthPositive(rangeBox)) {
+                System.out.println("All widths must be positive.");
+                return;
             }
+            System.out.println("The following objects intersect (" + x + " " + y
+                + " " + z + " " + xWidth + " " + yWidth + " " + zWidth + "):");
+            LinkedList<AirObject> results = tree.intersectRangeSearch(rangeBox);
+            int visitedNum = tree.intersectRegionSearchCounter(rangeBox);
+            int length = results.length();
+            results.moveToStart();
+            if (!results.isEmpty()) {
+                for (int i = 0; i < length; i++) {
+                    LinkedList<String> currObjInfo = SkipList.getAirInfo(results
+                        .getValue());
+                    System.out.println(getObjInfo(currObjInfo));
+                    results.next();
+                }
+            }
+            System.out.println(visitedNum
+                + " nodes were visited in the bintree");
 
+        }
+        else if (operator.equals("collisions")) {
+            System.out.println("The following collisions exist in the database:");
+            LinkedList<Pair<AirObject, AirObject>> collisionList = tree.getCollisions();
+            collisionList.moveToStart();
+            if (collisionList.isEmpty()) {
+                return;
+            }
+            while(!collisionList.isAtEnd()) {
+                Pair<AirObject, AirObject> objPair = collisionList.getValue();
+                LinkedList<String> pair1 = SkipList.getAirInfo(objPair.getLeft());
+                LinkedList<String> pair2 = SkipList.getAirInfo(objPair.getRight());
+                System.out.println("(" + getObjInfo(pair1) + ")" + " and " + "(" + getObjInfo(pair2) + ")");
+                collisionList.next();
+            }
         }
         // print
         else if (operator.equals("print")) {
-            System.out.println(">print");
-            LinkedList<Node> results = tree.preorderTraverse();
-            int length = results.length();
-            for (int i = 0; i < length; i++) {
-                Node curr = results.getValue();
-                if (curr instanceof InternalNode) {
-                    System.out.println(printSpace(curr.getLevel()) + "I" + ", "
-                        + curr.getX() + ", " + curr.getY() + ", " + curr
-                            .getWidth() + ", " + curr.getHeight());
-                }
-                else if (curr instanceof FlyWeight) {
-                    System.out.println(printSpace(curr.getLevel()) + "E" + ", "
-                        + curr.getX() + ", " + curr.getY() + ", " + curr
-                            .getWidth() + ", " + curr.getHeight());
-                }
-                else {
-                    Leaf currNode = (Leaf)curr;
-                    System.out.println(printSpace(currNode.getLevel())
-                        + currNode.getCity() + ", " + currNode.getLocX() + ", "
-                        + currNode.getLocY());
-                }
-                results.next();
+            if (data[1].equals("skiplist")) {
+                // skip list dump
+                skiplist.dump();
             }
+            else if (data[1].equals("bintree")) {
+                System.out.println("Bintree dump:");
+                LinkedList<AirObject> traverseResults = tree.preorderTraverse();
+                int num = 0;
+                while(!traverseResults.isAtEnd()) {
+                    AirObject curr = traverseResults.getValue();
+                    if (curr instanceof InternalAirObject) {
+                        System.out.println(printSpace(curr.getLevel()) + "I");
+                        num++;
+                    }
+                    else {
+                        LeafAirObject currLeaf = (LeafAirObject)curr;
+                        if (currLeaf.getCurrNum() == 0) {
+                            System.out.println(printSpace(curr.getLevel())
+                                + "E");
+                            num++;
+                        }
+                        else {
+                            // get the object contents in the leaf
+                            System.out.println(printSpace(curr.getLevel())
+                                + "Leaf with " + currLeaf.getCurrNum()
+                                + " objects:");
+                            num++;
+                            AirObject[] objList = currLeaf.getContainer();
+                            for (int j = 0; j < currLeaf.getCurrNum(); j++) {
+                                AirObject currLeafObj = objList[j];
+                                LinkedList<String> currObjInfo = SkipList
+                                    .getAirInfo(currLeafObj);
+                                
+                                System.out.println(printSpace(curr.getLevel())
+                                    + "(" + getObjInfo(currObjInfo) + ")");
+                            }
+                        }
+                    }
+                    traverseResults.next();
+                }
+                System.out.println(num + " bintree nodes printed");
+            }
+        }
+        else if (operator.equals("rangeprint")) {
+            String start = data[1];
+            String end = data[2];
+            if (start.compareTo(end) > 0) {
+                System.out.println("Error in rangeprint parameters: |" + start
+                    + "| is not less than |" + end + "|");
+            }
+            // range print with skip list
+            LinkedList<AirObject> traverseResults = tree.preorderTraverse();
+            AirObject[] objArray = transferToArray(traverseResults);
+            sort(objArray);
+            for (int i = 0; i < objArray.length; i++) {
+                if (objArray[i].getName().compareTo(start) >= 0 && objArray[i]
+                    .getName().compareTo(end) <= 0) {
+                    // print the object out
+                    LinkedList<String> currObjInfo = SkipList.getAirInfo(
+                        objArray[i]);
+                    System.out.println(getObjInfo(currObjInfo));
+                }
+            }
+
         }
         else {
             throw new IllegalArgumentException();
         }
+
+    }
+
+    private String getObjInfo(LinkedList<String> currObjInfo) {
+        String info = "";
+        currObjInfo.moveToStart();
+        while (!currObjInfo.isAtEnd()) {
+            info += currObjInfo.getValue();
+            info += " ";
+            currObjInfo.next();
+        }
+        info.trim();
+        return info;
+    }
+
+    /**
+     * Bubble sort
+     */
+    private void sort(AirObject[] container) {
+        int numOfObject = container.length;
+        for (int i = 0; i < numOfObject - 1; i++) {
+            for (int j = 0; j < numOfObject - i - 1; j++) {
+                if (container[j].compareTo(container[j + 1]) > 0) {
+                    // swap
+                    AirObject temp = container[j];
+                    container[j] = container[j + 1];
+                    container[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+
+    private AirObject[] transferToArray(LinkedList<AirObject> list) {
+        int num = list.length();
+        AirObject[] objArray = new AirObject[num];
+        list.moveToStart();
+        int idx = 0;
+        while (!list.isAtEnd()) {
+            objArray[idx] = list.getValue();
+            list.next();
+        }
+        return objArray;
     }
 
 
     private AirObject addHelper(String[] addData) {
-        AirObject createObj = new AirObject(addData[2]); // set name here
-        createObj.setxOrig(Integer.valueOf(addData[3]));
-        createObj.setyOrig(Integer.valueOf(addData[4]));
-        createObj.setzOrig(Integer.valueOf(addData[5]));
-        createObj.setxWidth(Integer.valueOf(addData[6]));
-        createObj.setyWidth(Integer.valueOf(addData[7]));
-        createObj.setzWidth(Integer.valueOf(addData[8]));
+        
         switch (addData[1]) {
-            case "ballon":
-                Balloon balloon = (Balloon)createObj;
+            case "balloon":
+                Balloon balloon = new Balloon(addData[2]); // set name here
+                balloon.setxOrig(Integer.valueOf(addData[3]));
+                balloon.setyOrig(Integer.valueOf(addData[4]));
+                balloon.setzOrig(Integer.valueOf(addData[5]));
+                balloon.setxWidth(Integer.valueOf(addData[6]));
+                balloon.setyWidth(Integer.valueOf(addData[7]));
+                balloon.setzWidth(Integer.valueOf(addData[8]));
                 balloon.setType(addData[9]);
                 balloon.setType(addData[10]);
-                createObj = balloon;
-                break;
+                return balloon;
             case "airplane":
-                Airplane airplane = (Airplane)createObj;
+                Airplane airplane = new Airplane(addData[2]); // set name here
+                airplane.setxOrig(Integer.valueOf(addData[3]));
+                airplane.setyOrig(Integer.valueOf(addData[4]));
+                airplane.setzOrig(Integer.valueOf(addData[5]));
+                airplane.setxWidth(Integer.valueOf(addData[6]));
+                airplane.setyWidth(Integer.valueOf(addData[7]));
+                airplane.setzWidth(Integer.valueOf(addData[8]));
                 airplane.setCarrier(addData[9]);
                 airplane.setFlightNum(Integer.valueOf(addData[10]));
                 airplane.setEngineNum(Integer.valueOf(addData[11]));
-                createObj = airplane;
-                break;
+                return airplane;
             case "rocket":
-                Rocket rocket = (Rocket)createObj;
+                Rocket rocket = new Rocket(addData[2]); // set name here
+                rocket.setxOrig(Integer.valueOf(addData[3]));
+                rocket.setyOrig(Integer.valueOf(addData[4]));
+                rocket.setzOrig(Integer.valueOf(addData[5]));
+                rocket.setxWidth(Integer.valueOf(addData[6]));
+                rocket.setyWidth(Integer.valueOf(addData[7]));
+                rocket.setzWidth(Integer.valueOf(addData[8]));
                 rocket.setAscentRate(Integer.valueOf(addData[9]));
                 rocket.setTrajectory(Double.valueOf(addData[10]));
-                createObj = rocket;
-                break;
+                return rocket;
             case "drone":
-                Drone drone = (Drone)createObj;
+                Drone drone = new Drone(addData[2]); // set name here
+                drone.setxOrig(Integer.valueOf(addData[3]));
+                drone.setyOrig(Integer.valueOf(addData[4]));
+                drone.setzOrig(Integer.valueOf(addData[5]));
+                drone.setxWidth(Integer.valueOf(addData[6]));
+                drone.setyWidth(Integer.valueOf(addData[7]));
+                drone.setzWidth(Integer.valueOf(addData[8]));
                 drone.setBrand(addData[9]);
                 drone.setEngineNum(Integer.valueOf(addData[10]));
-                createObj = drone;
-                break;
+                return drone;
             case "bird":
-                Bird bird = (Bird)createObj;
+                Bird bird = new Bird(addData[2]); // set name here
+                bird.setxOrig(Integer.valueOf(addData[3]));
+                bird.setyOrig(Integer.valueOf(addData[4]));
+                bird.setzOrig(Integer.valueOf(addData[5]));
+                bird.setxWidth(Integer.valueOf(addData[6]));
+                bird.setyWidth(Integer.valueOf(addData[7]));
+                bird.setzWidth(Integer.valueOf(addData[8]));
                 bird.setType(addData[9]);
                 bird.setNumber(Integer.valueOf(addData[10]));
-                createObj = bird;
-                break;
+                return bird;
         }
-        return createObj;
+        return null;
     }
+
 
     private String printSpace(int spaceNum) {
         String space = "";
