@@ -219,15 +219,8 @@ public class BinTree {
 
 
     public LinkedList<AirObject> intersectRangeSearch(
-        int startX,
-        int startY,
-        int startZ,
-        int xRange,
-        int yRange,
-        int zRange) {
+        AirObject rangeBox) {
         LinkedList<AirObject> results = new LinkedList<>();
-        AirObject rangeBox = new AirObject(startX, startY, startZ, xRange,
-            yRange, zRange, 0);
 
         regionSearchHelper(results, rangeBox, root);
         results.moveToStart();
@@ -261,15 +254,8 @@ public class BinTree {
 
 
     public int intersectRegionSearchCounter(
-        int startX,
-        int startY,
-        int startZ,
-        int xRange,
-        int yRange,
-        int zRange) {
+        AirObject rangeBox) {
 
-        AirObject rangeBox = new AirObject(startX, startY, startZ, xRange,
-            yRange, zRange, 0);
         return regionSearchCounterHelper(rangeBox, root);
 
     }
