@@ -348,7 +348,7 @@ public class BinTree {
             LeafAirObject currLeaf = (LeafAirObject)curr;
             currLeaf.removeAirObject(removeObject);
             if (currLeaf.isEmpty()) {
-                AirObject flyWeight = new AirObject();
+                Flyweight flyWeight = new Flyweight();
                 curr = flyWeight;
             }
         }
@@ -372,14 +372,14 @@ public class BinTree {
     private AirObject garbageCollect(AirObject currNode) {
         if (currNode instanceof InternalAirObject) {
             InternalAirObject currInternal = (InternalAirObject)currNode;
-            if (currInternal.getLeft() instanceof AirObject && currInternal
-                .getRight() instanceof AirObject) {
-                return new AirObject(currInternal.getXorig(), currInternal
+            if (currInternal.getLeft() instanceof Flyweight && currInternal
+                .getRight() instanceof Flyweight) {
+                return new Flyweight(currInternal.getXorig(), currInternal
                     .getYorig(), currInternal.getZorig(), currInternal
                         .getXwidth(), currInternal.getYwidth(), currInternal
                             .getZwidth(), currInternal.getLevel());
             }
-            else if (currInternal.getLeft() instanceof AirObject && currInternal
+            else if (currInternal.getLeft() instanceof Flyweight && currInternal
                 .getRight() instanceof LeafAirObject) {
                 LeafAirObject currLeaf = (LeafAirObject)currInternal.getRight();
                 currLeaf.setLevel(currInternal.getLevel());
@@ -391,7 +391,7 @@ public class BinTree {
                 currLeaf.setzWidth(currInternal.getZwidth());
                 return currLeaf;
             }
-            else if (currInternal.getRight() instanceof AirObject
+            else if (currInternal.getRight() instanceof Flyweight
                 && currInternal.getLeft() instanceof LeafAirObject) {
                 LeafAirObject currLeaf = (LeafAirObject)currInternal.getLeft();
                 currLeaf.setLevel(currInternal.getLevel());
@@ -416,12 +416,12 @@ public class BinTree {
 
 
     private boolean garbageCollectHelper(InternalAirObject currInternal) {
-        return !(currInternal.getLeft() instanceof AirObject && currInternal
-            .getRight() instanceof AirObject) && !(currInternal
+        return !(currInternal.getLeft() instanceof Flyweight && currInternal
+            .getRight() instanceof Flyweight) && !(currInternal
                 .getLeft() instanceof LeafAirObject && currInternal
-                    .getRight() instanceof AirObject) && !(currInternal
+                    .getRight() instanceof Flyweight) && !(currInternal
                         .getRight() instanceof LeafAirObject && currInternal
-                            .getLeft() instanceof AirObject);
+                            .getLeft() instanceof Flyweight);
 
     }
 
