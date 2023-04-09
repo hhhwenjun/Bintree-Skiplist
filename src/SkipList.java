@@ -216,7 +216,7 @@ public class SkipList<K extends Comparable<K>, E> {
     }
 
 
-    private LinkedList<String> getAirInfo(AirObject object) {
+    public static LinkedList<String> getAirInfo(AirObject object) {
 
         LinkedList<String> info = new LinkedList<>();
         info.moveToStart();
