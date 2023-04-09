@@ -6,7 +6,8 @@ import java.util.Scanner;
 /**
  * Read file and provide
  * 
- *
+ * @author Xuhui Zeng
+ * @version 2023.04.08
  */
 
 public class TextReader {
@@ -64,9 +65,10 @@ public class TextReader {
         return obj.getXorig() <= 1024 && obj.getYorig() <= 1024 && obj
             .getZorig() <= 1024 && obj.getXorig() + obj.getXwidth() >= 0 && obj
                 .getYorig() + obj.getYwidth() >= 0 && obj.getZorig() + obj
-                    .getZwidth() >= 0 && obj.getXorig() + obj.getXwidth() <= 1024 && obj
-                        .getYorig() + obj.getYwidth() <= 1024 && obj.getZorig() + obj
-                        .getZwidth() <= 1024;
+                    .getZwidth() >= 0 && obj.getXorig() + obj
+                        .getXwidth() <= 1024 && obj.getYorig() + obj
+                            .getYwidth() <= 1024 && obj.getZorig() + obj
+                                .getZwidth() <= 1024;
 
     }
 
@@ -101,13 +103,13 @@ public class TextReader {
                 System.out.println(badBox + " All widths must be positive.");
                 return;
             }
-            
+
             if (!rangeHelper(addObj)) {
                 System.out.println(badBox
                     + " All boxes must be entirely within the world box.");
                 return;
             }
-            
+
             // already has the object w/ same name
             if (skiplist.find(objName) != null) {
                 System.out.println("Duplicate object names not permitted: |"
@@ -196,17 +198,22 @@ public class TextReader {
 
         }
         else if (operator.equals("collisions")) {
-            System.out.println("The following collisions exist in the database:");
-            LinkedList<Pair<AirObject, AirObject>> collisionList = tree.getCollisions();
+            System.out.println(
+                "The following collisions exist in the database:");
+            LinkedList<Pair<AirObject, AirObject>> collisionList = tree
+                .getCollisions();
             collisionList.moveToStart();
             if (collisionList.isEmpty()) {
                 return;
             }
-            while(!collisionList.isAtEnd()) {
+            while (!collisionList.isAtEnd()) {
                 Pair<AirObject, AirObject> objPair = collisionList.getValue();
-                LinkedList<String> pair1 = SkipList.getAirInfo(objPair.getLeft());
-                LinkedList<String> pair2 = SkipList.getAirInfo(objPair.getRight());
-                System.out.println("(" + getObjInfo(pair1) + ")" + " and " + "(" + getObjInfo(pair2) + ")");
+                LinkedList<String> pair1 = SkipList.getAirInfo(objPair
+                    .getLeft());
+                LinkedList<String> pair2 = SkipList.getAirInfo(objPair
+                    .getRight());
+                System.out.println("(" + getObjInfo(pair1) + ")" + " and " + "("
+                    + getObjInfo(pair2) + ")");
                 collisionList.next();
             }
         }
@@ -220,7 +227,7 @@ public class TextReader {
                 System.out.println("Bintree dump:");
                 LinkedList<AirObject> traverseResults = tree.preorderTraverse();
                 int num = 0;
-                while(!traverseResults.isAtEnd()) {
+                while (!traverseResults.isAtEnd()) {
                     AirObject curr = traverseResults.getValue();
                     if (curr instanceof InternalAirObject) {
                         System.out.println(printSpace(curr.getLevel()) + "I");
@@ -244,7 +251,7 @@ public class TextReader {
                                 AirObject currLeafObj = objList[j];
                                 LinkedList<String> currObjInfo = SkipList
                                     .getAirInfo(currLeafObj);
-                                
+
                                 System.out.println(printSpace(curr.getLevel())
                                     + "(" + getObjInfo(currObjInfo) + ")");
                             }
@@ -283,6 +290,7 @@ public class TextReader {
 
     }
 
+
     private String getObjInfo(LinkedList<String> currObjInfo) {
         String info = "";
         currObjInfo.moveToStart();
@@ -294,6 +302,7 @@ public class TextReader {
         info.trim();
         return info;
     }
+
 
     /**
      * Bubble sort
@@ -327,7 +336,7 @@ public class TextReader {
 
 
     private AirObject addHelper(String[] addData) {
-        
+
         switch (addData[1]) {
             case "balloon":
                 Balloon balloon = new Balloon(addData[2]); // set name here

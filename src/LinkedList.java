@@ -277,9 +277,7 @@ public class LinkedList<T> implements ListADT<T> {
     /**
      * Create a node class for the linkedlist. Reference code of CS2114
      * 
-     * @author Wenjun Han
-     * @param <T>
-     *            The content type of node
+     * @author Xuhui Zeng
      */
     private class Node {
         private T data;

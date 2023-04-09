@@ -4,7 +4,7 @@ import java.util.Random;
  * Skip list class from OpenDSA
  * 
  * @author Xuhui Zeng, OpenDSA
- * @version 4.1.22
+ * @version 2023.04.08
  * @param <K>
  *            Key of node
  * @param <E>
@@ -47,11 +47,16 @@ public class SkipList<K extends Comparable<K>, E> {
         return size;
     }
 
+
+    /**
+     * Clear list
+     */
     public void clear() {
         head = new SkipNode<>(null, null, 0);
         level = -1;
         size = 0;
     }
+
 
     /**
      * Search the element with key
@@ -72,9 +77,7 @@ public class SkipList<K extends Comparable<K>, E> {
         if ((x != null) && (x.key().compareTo(key) == 0)) {
             return x.element();
         }
-        else {
-            return null;
-        }
+        return null;
     }
 
 
@@ -203,7 +206,7 @@ public class SkipList<K extends Comparable<K>, E> {
             LinkedList<String> objectInfo = getAirInfo(element);
             objectInfo.moveToStart();
             String infoString = "";
-            while(!objectInfo.isAtEnd()) {
+            while (!objectInfo.isAtEnd()) {
                 infoString += objectInfo.getValue();
                 objectInfo.next();
                 infoString += " ";
@@ -216,12 +219,19 @@ public class SkipList<K extends Comparable<K>, E> {
     }
 
 
+    /**
+     * Get air project info
+     * 
+     * @param object
+     *            AirObject
+     * @return info
+     */
     public static LinkedList<String> getAirInfo(AirObject object) {
 
         LinkedList<String> info = new LinkedList<>();
         info.moveToStart();
         info.append(object.getObjectType());
-        if (object.getObjectType().equals(AirObject.AirObject)) {
+        if (object.getObjectType().equals(AirObject.AIROBJECT)) {
             return info;
         }
         info.append(String.valueOf(object.getXorig()));
@@ -232,28 +242,28 @@ public class SkipList<K extends Comparable<K>, E> {
         info.append(String.valueOf(object.getZwidth()));
 
         switch (object.getObjectType()) {
-            case AirObject.Balloon:
+            case AirObject.BALLOON:
                 Balloon balloon = (Balloon)object;
                 info.append(balloon.getType());
                 info.append(String.valueOf(balloon.getAscentRate()));
                 break;
-            case AirObject.Airplane:
+            case AirObject.AIRPLANE:
                 Airplane airplane = (Airplane)object;
                 info.append(airplane.getCarrier());
                 info.append(String.valueOf(airplane.getFlightNum()));
                 info.append(String.valueOf(airplane.getEngineNum()));
                 break;
-            case AirObject.Bird:
+            case AirObject.BIRD:
                 Bird bird = (Bird)object;
                 info.append(bird.getType());
                 info.append(String.valueOf(bird.getNumber()));
                 break;
-            case AirObject.Drone:
+            case AirObject.DRONE:
                 Drone drone = (Drone)object;
                 info.append(drone.getBrand());
                 info.append(String.valueOf(drone.getEngineNum()));
                 break;
-            case AirObject.Rocket:
+            case AirObject.ROCKET:
                 Rocket rocket = (Rocket)object;
                 info.append(String.valueOf(rocket.getAscentRate()));
                 info.append(String.format("%.2f", rocket.getTrajectory()));

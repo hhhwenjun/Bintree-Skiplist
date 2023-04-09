@@ -86,10 +86,11 @@ public class Airplane extends AirObject {
 
     /**
      * Getter for object type.
+     * 
      * @return Airplane
      */
     public String getObjectType() {
-        return Airplane;
+        return AIRPLANE;
     }
 
 }

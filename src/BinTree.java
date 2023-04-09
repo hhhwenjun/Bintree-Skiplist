@@ -509,11 +509,11 @@ class Pair<K, V> {
     /**
      * left object
      */
-    K left;
+    private K left;
     /**
      * right object
      */
-    V right;
+    private V right;
 
     /**
      * Create a new Pair object.

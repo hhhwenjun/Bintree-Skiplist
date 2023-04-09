@@ -69,7 +69,7 @@ public class Balloon extends AirObject {
      * @return Balloon
      */
     public String getObjectType() {
-        return Balloon;
+        return BALLOON;
     }
 
 }

@@ -71,7 +71,7 @@ public class Rocket extends AirObject {
      * @return Rocket
      */
     public String getObjectType() {
-        return Rocket;
+        return ROCKET;
     }
 
 }
