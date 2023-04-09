@@ -303,8 +303,31 @@ public class BinTree {
      */
     public LinkedList<Pair<AirObject, AirObject>> getCollisions() {
         LinkedList<Pair<AirObject, AirObject>> results = new LinkedList<>();
-
+        collisionHelper(root, results);
         return results;
+    }
+    
+    private void collisionHelper(
+        AirObject currNode,
+        LinkedList<Pair<AirObject, AirObject>> list) {
+
+        if (currNode instanceof InternalAirObject) {
+            InternalAirObject currInternal = (InternalAirObject)currNode;
+            collisionHelper(currInternal.getLeft(), list);
+            collisionHelper(currInternal.getRight(), list);
+        }
+        else {
+            // this is a leaf air object
+            LeafAirObject currLeaf = (LeafAirObject)currNode;
+            AirObject[] container = currLeaf.getContainer();
+            for (int i = 0; i < currLeaf.getCurrNum(); i++) {
+                for (int j = i + 1; j < currLeaf.getCurrNum(); j++) {
+                    if (overlap(container[i], container[j])) {
+                        list.append(new Pair<>(container[i], container[j]));
+                    }
+                }
+            }
+        }
     }
 
 
