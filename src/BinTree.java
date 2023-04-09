@@ -216,7 +216,8 @@ public class BinTree {
         }
         return currInternal;
     }
-    
+
+
     public LinkedList<AirObject> intersectRangeSearch(
         int startX,
         int startY,
@@ -225,13 +226,15 @@ public class BinTree {
         int yRange,
         int zRange) {
         LinkedList<AirObject> results = new LinkedList<>();
-        AirObject rangeBox = new AirObject(startX, startY, startZ, xRange, yRange, zRange, 0);
+        AirObject rangeBox = new AirObject(startX, startY, startZ, xRange,
+            yRange, zRange, 0);
 
         regionSearchHelper(results, rangeBox, root);
         results.moveToStart();
 
         return results;
     }
+
 
     private void regionSearchHelper(
         LinkedList<AirObject> results,
@@ -255,14 +258,52 @@ public class BinTree {
             }
         }
     }
-    
+
+
+    public int intersectRegionSearchCounter(
+        int startX,
+        int startY,
+        int startZ,
+        int xRange,
+        int yRange,
+        int zRange) {
+
+        AirObject rangeBox = new AirObject(startX, startY, startZ, xRange,
+            yRange, zRange, 0);
+        return regionSearchCounterHelper(rangeBox, root);
+
+    }
+
+
+    private int regionSearchCounterHelper(AirObject box, AirObject curr) {
+
+        if (curr instanceof LeafAirObject) {
+            LeafAirObject currLeaf = (LeafAirObject)curr;
+            if (overlap(box, currLeaf)) {
+                return 1;
+            }
+            return 0;
+        }
+        // else internal
+        InternalAirObject currInternal = (InternalAirObject)curr;
+        if (overlap(box, currInternal)) {
+
+            return 1 + regionSearchCounterHelper(box, currInternal.getLeft())
+                + regionSearchCounterHelper(box, currInternal.getRight());
+        }
+        return 0;
+
+    }
+
+
     /**
      * get all the collisions in the bin tree
-     *  
+     * 
      * @return List of collision objects
      */
-    public LinkedList<Pair<AirObject,AirObject>> getCollisions(){
-        LinkedList<Pair<AirObject,AirObject>> results = new LinkedList<>();
+    public LinkedList<Pair<AirObject, AirObject>> getCollisions() {
+        LinkedList<Pair<AirObject, AirObject>> results = new LinkedList<>();
+
         return results;
     }
 
@@ -394,44 +435,50 @@ public class BinTree {
         AirObject currNode,
         LinkedList<AirObject> list) {
         list.append(currNode);
-        
+
         if (currNode instanceof InternalAirObject) {
             InternalAirObject currInternal = (InternalAirObject)currNode;
+            list.append(currInternal);
             preorderHelper(currInternal.getLeft(), list);
             preorderHelper(currInternal.getRight(), list);
         }
         else {
             // this is a leaf air object
             LeafAirObject currLeaf = (LeafAirObject)currNode;
+            list.append(currLeaf);
             AirObject[] container = currLeaf.getContainer();
             for (int i = 0; i < currLeaf.getCurrNum(); i++) {
                 list.append(container[i]);
             }
         }
     }
-    
+
     static class Pair<K, V> {
-        
+
         K left;
         V right;
-        
+
         public Pair(K left, V right) {
             this.left = left;
             this.right = right;
         }
-        
+
+
         public K getLeft() {
             return left;
         }
-        
+
+
         public V getRight() {
             return right;
         }
-        
+
+
         public void setLeft(K left) {
             this.left = left;
         }
-        
+
+
         public void setRight(V right) {
             this.right = right;
         }

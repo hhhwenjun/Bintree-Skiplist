@@ -11,12 +11,14 @@ import java.util.Scanner;
 public class TextReader {
 
     private BinTree tree;
+    private SkipList<String, AirObject> skiplist;
 
     /**
      * Constructor of text reader
      */
     public TextReader() {
         tree = new BinTree();
+        skiplist = new SkipList<>();
     }
 
 
@@ -31,6 +33,7 @@ public class TextReader {
     public void readFile(String fileName) throws FileNotFoundException {
 
         tree.clear();
+        skiplist.clear();
 
         File newFile = new File(fileName);
         Scanner file = new Scanner(newFile);
@@ -56,8 +59,18 @@ public class TextReader {
     }
 
 
-    private boolean rangeHelper(int x, int y, int w, int h) {
-        return x <= 1023 && y <= 1023 && x + w >= 0 && y + h >= 0;
+    private boolean rangeHelper(AirObject obj) {
+        return obj.getXorig() <= 1023 && obj.getYorig() <= 1023 && obj
+            .getZorig() <= 1023 && obj.getXorig() + obj.getXwidth() >= 0 && obj
+                .getYorig() + obj.getYwidth() >= 0 && obj.getZorig() + obj
+                    .getZwidth() >= 0;
+
+    }
+
+
+    private boolean widthPositive(AirObject obj) {
+        return obj.getXwidth() >= 0 && obj.getYwidth() >= 0 && obj
+            .getZwidth() >= 0;
     }
 
 
@@ -73,47 +86,72 @@ public class TextReader {
 
         // data may out of range but do not check all the time
         String operator = data[0];
-        if (operator.equals("insert")) {
-            int x = Integer.valueOf(data[1]);
-            int y = Integer.valueOf(data[2]);
+        if (operator.equals("add")) {
+            AirObject addObj = addHelper(data);
+            String objName = data[1];
 
-            String city = data[3];
-            // already has the city w/o same name
-            System.out.println(">insert " + x + " " + y + " " + city);
-            if (tree.find(x, y)) {
+            // bad boxes
+            String badBox = "Bad box (" + addObj.getXorig() + " " + addObj
+                .getYorig() + " " + addObj.getZorig() + " " + addObj.getXwidth()
+                + " " + addObj.getYwidth() + " " + addObj.getZwidth() + ").";
+            if (!rangeHelper(addObj)) {
+                System.out.println(badBox
+                    + " All boxes must be entirely within the world box.");
+            }
+            if (!widthPositive(addObj)) {
+                System.out.println(badBox
+                    + " All widths must be positive.");
+            }
+
+            // already has the object w/ same name
+            if (skiplist.find(objName) != null) {
+                System.out.println("Duplicate object names not permitted: |" + objName + "|");
                 return;
             }
-            tree.insert(x, y, city);
-            
+
+            tree.insert(addObj);
+            skiplist.insert(data[1], addObj);
+            System.out.println(objName + " has been added to the database");
+
         }
-        else if (operator.equals("remove")) {
-            int x = Integer.valueOf(data[1]);
-            int y = Integer.valueOf(data[2]);
-            System.out.println(">remove " + x + " " + y);
-            if (!tree.find(x, y)) {
-                System.out.println(
-                    "Record could not be removed. It does not exist.");
+        else if (operator.equals("delete")) {
+            String objName = data[1];
+
+            // object not found
+            AirObject removeObj = skiplist.find(objName);
+            if (removeObj == null) {
+                System.out.println("Object |" + objName + "| not in the database");
                 return;
             }
-            tree.remove(x, y);
+            tree.remove(removeObj);
+            System.out.println("Deleted |" + objName + "| from the database");
 
         }
-        else if (operator.equals("find")) {
-            int x = Integer.valueOf(data[1]);
-            int y = Integer.valueOf(data[2]);
-            System.out.println(">find " + x + " " + y);
-            if (!tree.find(x, y)) {
-                System.out.println(
-                    "Record could not be printed. It does not exist.");
-            }
-            else {
-                String city = tree.findCity(x, y);
+        // find the object
+        else if (operator.equals("print") && data[1].equals("object")) {
 
-                System.out.println(city + " " + x + " " + y);
+            String objName = data[1];
+
+            // object not found
+            AirObject findObj = skiplist.find(objName);
+            if (findObj == null) {
+                System.out.println("|" + objName + "| does not exist in the database");
+                return;
             }
+
+            LinkedList<String> airInfo = SkipList.getAirInfo(findObj);
+            String info = "";
+            airInfo.moveToStart();
+            while(!airInfo.isAtEnd()) {
+                info += airInfo.getValue();
+                info += " ";
+            }
+            info.trim();
+            System.out.println("Found: " + info);
 
         }
-        else if (operator.equals("regionsearch")) {
+        // TODO: intersect and other print operations
+        else if (operator.equals("intersect")) {
             int x = Integer.valueOf(data[1]);
             int y = Integer.valueOf(data[2]);
             int w = Integer.valueOf(data[3]);
@@ -173,6 +211,50 @@ public class TextReader {
         }
     }
 
+
+    private AirObject addHelper(String[] addData) {
+        AirObject createObj = new AirObject(addData[2]); // set name here
+        createObj.setxOrig(Integer.valueOf(addData[3]));
+        createObj.setyOrig(Integer.valueOf(addData[4]));
+        createObj.setzOrig(Integer.valueOf(addData[5]));
+        createObj.setxWidth(Integer.valueOf(addData[6]));
+        createObj.setyWidth(Integer.valueOf(addData[7]));
+        createObj.setzWidth(Integer.valueOf(addData[8]));
+        switch (addData[1]) {
+            case "ballon":
+                Balloon balloon = (Balloon)createObj;
+                balloon.setType(addData[9]);
+                balloon.setType(addData[10]);
+                createObj = balloon;
+                break;
+            case "airplane":
+                Airplane airplane = (Airplane)createObj;
+                airplane.setCarrier(addData[9]);
+                airplane.setFlightNum(Integer.valueOf(addData[10]));
+                airplane.setEngineNum(Integer.valueOf(addData[11]));
+                createObj = airplane;
+                break;
+            case "rocket":
+                Rocket rocket = (Rocket)createObj;
+                rocket.setAscentRate(Integer.valueOf(addData[9]));
+                rocket.setTrajectory(Double.valueOf(addData[10]));
+                createObj = rocket;
+                break;
+            case "drone":
+                Drone drone = (Drone)createObj;
+                drone.setBrand(addData[9]);
+                drone.setEngineNum(Integer.valueOf(addData[10]));
+                createObj = drone;
+                break;
+            case "bird":
+                Bird bird = (Bird)createObj;
+                bird.setType(addData[9]);
+                bird.setNumber(Integer.valueOf(addData[10]));
+                createObj = bird;
+                break;
+        }
+        return createObj;
+    }
 
     private String printSpace(int spaceNum) {
         String space = "";

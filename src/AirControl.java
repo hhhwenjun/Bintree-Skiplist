@@ -1,12 +1,13 @@
 /**
- * {Project Description Here}
+ * Implement a small piece in an air traffic control system to track the
+ * locations of many objects and determining if any are at risk of colliding
  */
 
 /**
  * The class containing the main method.
  *
  * @author Xuhui Zeng
- * @version 2023.03.26
+ * @version 2023.04.08
  */
 
 // On my honor:
