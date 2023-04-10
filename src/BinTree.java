@@ -103,45 +103,14 @@ public class BinTree {
         // it is internal node, keep going down
         else {
             InternalAirObject currInternal = (InternalAirObject)curr;
-            int locX = insertObject.getXorig();
-            int locY = insertObject.getYorig();
-            int locZ = insertObject.getZorig();
 
-            if (currInternal.getXwidth() < currInternal.getYwidth()) {
-                // next split at Y
-                if (locY < currInternal.getYorig() + currInternal.getYwidth()
-                    / 2) {
-                    currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                        insertObject));
-                }
-                else {
-                    currInternal.setRight(recursiveInsert(currInternal
-                        .getRight(), insertObject));
-                }
+            if (overlap(currInternal.getLeft(), insertObject)) {
+                currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
+                    insertObject));
             }
-            else if (currInternal.getYwidth() < currInternal.getZwidth()) {
-                // next split at Z
-                if (locZ < currInternal.getZorig() + currInternal.getZwidth()
-                    / 2) {
-                    currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                        insertObject));
-                }
-                else {
-                    currInternal.setRight(recursiveInsert(currInternal
-                        .getRight(), insertObject));
-                }
-            }
-            else {
-                // next split at X
-                if (locX < currInternal.getXorig() + currInternal.getXwidth()
-                    / 2) {
-                    currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                        insertObject));
-                }
-                else {
-                    currInternal.setRight(recursiveInsert(currInternal
-                        .getRight(), insertObject));
-                }
+            if (overlap(currInternal.getRight(), insertObject)){
+                currInternal.setRight(recursiveInsert(currInternal
+                    .getRight(), insertObject));
             }
         }
         return curr;
