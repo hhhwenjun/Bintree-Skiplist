@@ -68,6 +68,6 @@ public class Drone extends AirObject {
      * @return Drone
      */
     public String getObjectType() {
-        return Drone;
+        return DRONE;
     }
 }

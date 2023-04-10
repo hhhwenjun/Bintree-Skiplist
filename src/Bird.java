@@ -70,7 +70,7 @@ public class Bird extends AirObject {
      * @return Bird
      */
     public String getObjectType() {
-        return Bird;
+        return BIRD;
     }
 
 }

@@ -6,8 +6,8 @@ import java.util.NoSuchElementException;
  * 
  * The reference codes originally from class notes CS5040.
  * 
- * @author Wenjun Han
- * @version 2022.1.27
+ * @author Xuhui Zeng
+ * @version 2023.04.08
  * @param <E>
  */
 public interface ListADT<E> {

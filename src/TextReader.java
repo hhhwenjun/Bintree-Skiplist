@@ -6,7 +6,8 @@ import java.util.Scanner;
 /**
  * Read file and provide
  * 
- *
+ * @author Xuhui Zeng
+ * @version 2023.04.08
  */
 
 public class TextReader {
@@ -64,9 +65,10 @@ public class TextReader {
         return obj.getXorig() <= 1024 && obj.getYorig() <= 1024 && obj
             .getZorig() <= 1024 && obj.getXorig() + obj.getXwidth() >= 0 && obj
                 .getYorig() + obj.getYwidth() >= 0 && obj.getZorig() + obj
-                    .getZwidth() >= 0 && obj.getXorig() + obj.getXwidth() <= 1024 && obj
-                        .getYorig() + obj.getYwidth() <= 1024 && obj.getZorig() + obj
-                        .getZwidth() <= 1024;
+                    .getZwidth() >= 0 && obj.getXorig() + obj
+                        .getXwidth() <= 1024 && obj.getYorig() + obj
+                            .getYwidth() <= 1024 && obj.getZorig() + obj
+                                .getZwidth() <= 1024;
 
     }
 
@@ -101,13 +103,13 @@ public class TextReader {
                 System.out.println(badBox + " All widths must be positive.");
                 return;
             }
-            
+
             if (!rangeHelper(addObj)) {
                 System.out.println(badBox
                     + " All boxes must be entirely within the world box.");
                 return;
             }
-            
+
             // already has the object w/ same name
             if (skiplist.find(objName) != null) {
                 System.out.println("Duplicate object names not permitted: |"
@@ -116,7 +118,7 @@ public class TextReader {
             }
 
             tree.insert(addObj);
-            skiplist.insert(data[1], addObj);
+            skiplist.insert(objName, addObj);
             System.out.println(objName + " has been added to the database");
 
         }
@@ -131,13 +133,14 @@ public class TextReader {
                 return;
             }
             tree.remove(removeObj);
+            skiplist.remove(objName);
             System.out.println("Deleted |" + objName + "| from the database");
 
         }
         // find the object
         else if (operator.equals("print") && data[1].equals("object")) {
 
-            String objName = data[1];
+            String objName = data[2];
 
             // object not found
             AirObject findObj = skiplist.find(objName);
@@ -148,14 +151,8 @@ public class TextReader {
             }
 
             LinkedList<String> airInfo = SkipList.getAirInfo(findObj);
-            String info = "";
-            airInfo.moveToStart();
-            while (!airInfo.isAtEnd()) {
-                info += airInfo.getValue();
-                info += " ";
-            }
-            info.trim();
-            System.out.println("Found: " + info);
+
+            System.out.println("Found: " + getObjInfo(airInfo));
 
         }
         else if (operator.equals("intersect")) {
@@ -196,17 +193,26 @@ public class TextReader {
 
         }
         else if (operator.equals("collisions")) {
-            System.out.println("The following collisions exist in the database:");
-            LinkedList<Pair<AirObject, AirObject>> collisionList = tree.getCollisions();
+            System.out.println(
+                "The following collisions exist in the database:");
+            LinkedList<Pair<AirObject, AirObject>> collisionList = tree
+                .getCollisions();
             collisionList.moveToStart();
             if (collisionList.isEmpty()) {
                 return;
             }
-            while(!collisionList.isAtEnd()) {
+<<<<<<< HEAD
+            while (!collisionList.isAtEnd()) {
+=======
+            for (int i = 0; i < collisionList.length(); i++) {
+>>>>>>> c02d9ab (final edition)
                 Pair<AirObject, AirObject> objPair = collisionList.getValue();
-                LinkedList<String> pair1 = SkipList.getAirInfo(objPair.getLeft());
-                LinkedList<String> pair2 = SkipList.getAirInfo(objPair.getRight());
-                System.out.println("(" + getObjInfo(pair1) + ")" + " and " + "(" + getObjInfo(pair2) + ")");
+                LinkedList<String> pair1 = SkipList.getAirInfo(objPair
+                    .getLeft());
+                LinkedList<String> pair2 = SkipList.getAirInfo(objPair
+                    .getRight());
+                System.out.println("(" + getObjInfo(pair1) + ")" + " and " + "("
+                    + getObjInfo(pair2) + ")");
                 collisionList.next();
             }
         }
@@ -219,8 +225,14 @@ public class TextReader {
             else if (data[1].equals("bintree")) {
                 System.out.println("Bintree dump:");
                 LinkedList<AirObject> traverseResults = tree.preorderTraverse();
+                traverseResults.moveToStart();
                 int num = 0;
-                while(!traverseResults.isAtEnd()) {
+<<<<<<< HEAD
+                while (!traverseResults.isAtEnd()) {
+=======
+                int numOfObjList = traverseResults.length();
+                for (int i = 0; i < numOfObjList; i++) {
+>>>>>>> c02d9ab (final edition)
                     AirObject curr = traverseResults.getValue();
                     if (curr instanceof InternalAirObject) {
                         System.out.println(printSpace(curr.getLevel()) + "I");
@@ -244,7 +256,7 @@ public class TextReader {
                                 AirObject currLeafObj = objList[j];
                                 LinkedList<String> currObjInfo = SkipList
                                     .getAirInfo(currLeafObj);
-                                
+
                                 System.out.println(printSpace(curr.getLevel())
                                     + "(" + getObjInfo(currObjInfo) + ")");
                             }
@@ -261,11 +273,17 @@ public class TextReader {
             if (start.compareTo(end) > 0) {
                 System.out.println("Error in rangeprint parameters: |" + start
                     + "| is not less than |" + end + "|");
+                return;
             }
             // range print with skip list
-            LinkedList<AirObject> traverseResults = tree.preorderTraverse();
+            LinkedList<AirObject> results = tree.preorderTraverse();
+            results.moveToStart();
+            LinkedList<AirObject> traverseResults = getAllObjects(results);
+            traverseResults.moveToStart();
             AirObject[] objArray = transferToArray(traverseResults);
             sort(objArray);
+            System.out.println("Found these records in the range |" + start
+                + "| to |" + end + "|");
             for (int i = 0; i < objArray.length; i++) {
                 if (objArray[i].getName().compareTo(start) >= 0 && objArray[i]
                     .getName().compareTo(end) <= 0) {
@@ -283,17 +301,43 @@ public class TextReader {
 
     }
 
+
+<<<<<<< HEAD
+=======
+    private LinkedList<AirObject> getAllObjects(LinkedList<AirObject> results) {
+        LinkedList<AirObject> objects = new LinkedList<>();
+        objects.moveToStart();
+        results.moveToStart();
+        for (int i = 0; i < results.length(); i++) {
+            if (results.getValue() instanceof LeafAirObject) {
+                LeafAirObject currLeaf = (LeafAirObject)results.getValue();
+                if (!currLeaf.isEmpty()) {
+                    AirObject[] container = currLeaf.getContainer();
+                    for (int j = 0; j < currLeaf.getCurrNum(); j++) {
+                        objects.append(container[j]);
+                    }
+                } 
+            }            
+            results.next();
+        }
+        return objects;
+    }
+
+
+>>>>>>> c02d9ab (final edition)
     private String getObjInfo(LinkedList<String> currObjInfo) {
         String info = "";
         currObjInfo.moveToStart();
-        while (!currObjInfo.isAtEnd()) {
+        int num = currObjInfo.length();
+        for (int i = 0; i < num; i++) {
             info += currObjInfo.getValue();
             info += " ";
             currObjInfo.next();
         }
-        info.trim();
+        info = info.trim();
         return info;
     }
+
 
     /**
      * Bubble sort
@@ -317,9 +361,8 @@ public class TextReader {
         int num = list.length();
         AirObject[] objArray = new AirObject[num];
         list.moveToStart();
-        int idx = 0;
-        while (!list.isAtEnd()) {
-            objArray[idx] = list.getValue();
+        for (int i = 0; i < list.length(); i++) {
+            objArray[i] = list.getValue();
             list.next();
         }
         return objArray;
@@ -327,7 +370,7 @@ public class TextReader {
 
 
     private AirObject addHelper(String[] addData) {
-        
+
         switch (addData[1]) {
             case "balloon":
                 Balloon balloon = new Balloon(addData[2]); // set name here

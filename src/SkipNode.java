@@ -2,7 +2,7 @@
  * Create the skip node from OpenDSA
  * 
  * @author Xuhui Zeng
- * @version 4.2.22
+ * @version 2023.04.08
  *
  * @param <K>
  *            The key of pair

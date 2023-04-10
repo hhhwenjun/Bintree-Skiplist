@@ -24,27 +24,27 @@ public class AirObject implements Comparable<AirObject> {
     /**
      * Default null string
      */
-    protected static final String AirObject = "null";
+    protected static final String AIROBJECT = "null";
     /**
      * String for Balloon
      */
-    protected static final String Balloon = "Balloon";
+    protected static final String BALLOON = "Balloon";
     /**
      * String for Rocket
      */
-    protected static final String Rocket = "Rocket";
+    protected static final String ROCKET = "Rocket";
     /**
      * String for Drone
      */
-    protected static final String Drone = "Drone";
+    protected static final String DRONE = "Drone";
     /**
      * String for Bird
      */
-    protected static final String Bird = "Bird";
+    protected static final String BIRD = "Bird";
     /**
      * String for Airplane
      */
-    protected static final String Airplane = "Airplane";
+    protected static final String AIRPLANE = "Airplane";
 
     /**
      * Constructor for base AirObject
@@ -177,7 +177,9 @@ public class AirObject implements Comparable<AirObject> {
 
     /**
      * Setter for xOrig
-     * @param xOrig x origin
+     * 
+     * @param xOrig
+     *            x origin
      */
     public void setxOrig(int xOrig) {
         this.xOrig = xOrig;
@@ -186,7 +188,9 @@ public class AirObject implements Comparable<AirObject> {
 
     /**
      * Setter for yOrig
-     * @param yOrig y origin
+     * 
+     * @param yOrig
+     *            y origin
      */
     public void setyOrig(int yOrig) {
         this.yOrig = yOrig;
@@ -195,7 +199,9 @@ public class AirObject implements Comparable<AirObject> {
 
     /**
      * Setter for zOrig
-     * @param zOrig z origin
+     * 
+     * @param zOrig
+     *            z origin
      */
     public void setzOrig(int zOrig) {
         this.zOrig = zOrig;
@@ -204,7 +210,9 @@ public class AirObject implements Comparable<AirObject> {
 
     /**
      * Setter for xWidth
-     * @param xWidth x width
+     * 
+     * @param xWidth
+     *            x width
      */
     public void setxWidth(int xWidth) {
         this.xWidth = xWidth;
@@ -213,7 +221,9 @@ public class AirObject implements Comparable<AirObject> {
 
     /**
      * Setter for yWidth
-     * @param yWidth y width
+     * 
+     * @param yWidth
+     *            y width
      */
     public void setyWidth(int yWidth) {
         this.yWidth = yWidth;
@@ -222,7 +232,9 @@ public class AirObject implements Comparable<AirObject> {
 
     /**
      * Setter for zWidth
-     * @param zWidth z width
+     * 
+     * @param zWidth
+     *            z width
      */
     public void setzWidth(int zWidth) {
         this.zWidth = zWidth;
@@ -231,6 +243,7 @@ public class AirObject implements Comparable<AirObject> {
 
     /**
      * Getter for level
+     * 
      * @return level
      */
     public int getLevel() {
@@ -240,7 +253,9 @@ public class AirObject implements Comparable<AirObject> {
 
     /**
      * Setter for level
-     * @param level level of object
+     * 
+     * @param level
+     *            level of object
      */
     public void setLevel(int level) {
         this.level = level;
@@ -266,6 +281,6 @@ public class AirObject implements Comparable<AirObject> {
      * @return null string
      */
     public String getObjectType() {
-        return AirObject;
+        return AIROBJECT;
     }
 }
