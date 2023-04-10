@@ -1,7 +1,7 @@
 import java.util.Random;
 
 /**
- * Skip list class from OpenDSA
+ * Skip list class from OpenDSA 
  * 
  * @author Xuhui Zeng, OpenDSA
  * @version 2023.04.08

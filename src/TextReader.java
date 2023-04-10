@@ -201,11 +201,9 @@ public class TextReader {
             if (collisionList.isEmpty()) {
                 return;
             }
-<<<<<<< HEAD
-            while (!collisionList.isAtEnd()) {
-=======
+
             for (int i = 0; i < collisionList.length(); i++) {
->>>>>>> c02d9ab (final edition)
+
                 Pair<AirObject, AirObject> objPair = collisionList.getValue();
                 LinkedList<String> pair1 = SkipList.getAirInfo(objPair
                     .getLeft());
@@ -227,12 +225,10 @@ public class TextReader {
                 LinkedList<AirObject> traverseResults = tree.preorderTraverse();
                 traverseResults.moveToStart();
                 int num = 0;
-<<<<<<< HEAD
-                while (!traverseResults.isAtEnd()) {
-=======
+
                 int numOfObjList = traverseResults.length();
                 for (int i = 0; i < numOfObjList; i++) {
->>>>>>> c02d9ab (final edition)
+
                     AirObject curr = traverseResults.getValue();
                     if (curr instanceof InternalAirObject) {
                         System.out.println(printSpace(curr.getLevel()) + "I");
@@ -302,8 +298,6 @@ public class TextReader {
     }
 
 
-<<<<<<< HEAD
-=======
     private LinkedList<AirObject> getAllObjects(LinkedList<AirObject> results) {
         LinkedList<AirObject> objects = new LinkedList<>();
         objects.moveToStart();
@@ -316,15 +310,14 @@ public class TextReader {
                     for (int j = 0; j < currLeaf.getCurrNum(); j++) {
                         objects.append(container[j]);
                     }
-                } 
-            }            
+                }
+            }
             results.next();
         }
         return objects;
     }
 
 
->>>>>>> c02d9ab (final edition)
     private String getObjInfo(LinkedList<String> currObjInfo) {
         String info = "";
         currObjInfo.moveToStart();
