@@ -47,4 +47,18 @@ public class AirControlTest extends TestCase {
             "(Airplane Air1 0 10 1 20 2 30 USAir 717 4)"));
         System.out.println("End of test Input***********************");
     }
+    
+    /**
+     * Get code coverage for AirObject class
+     * 
+     * @throws FileNotFoundException
+     */
+    public void testA2() throws FileNotFoundException {
+        AirControl controller = new AirControl();
+        assertNotNull(controller);
+        AirControl.main(new String[] { "Sample Input2.txt" });
+        assertTrue(contains(systemOut().getHistory(),
+            "(Airplane Air1 0 10 1 20 2 30 USAir 717 4)"));
+        System.out.println("End of test Input***********************");
+    }
 }
