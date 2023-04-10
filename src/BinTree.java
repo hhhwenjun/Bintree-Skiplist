@@ -103,45 +103,14 @@ public class BinTree {
         // it is internal node, keep going down
         else {
             InternalAirObject currInternal = (InternalAirObject)curr;
-            int locX = insertObject.getXorig();
-            int locY = insertObject.getYorig();
-            int locZ = insertObject.getZorig();
 
-            if (currInternal.getXwidth() < currInternal.getYwidth()) {
-                // next split at Y
-                if (locY < currInternal.getYorig() + currInternal.getYwidth()
-                    / 2) {
-                    currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                        insertObject));
-                }
-                else {
-                    currInternal.setRight(recursiveInsert(currInternal
-                        .getRight(), insertObject));
-                }
+            if (overlap(currInternal.getLeft(), insertObject)) {
+                currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
+                    insertObject));
             }
-            else if (currInternal.getYwidth() < currInternal.getZwidth()) {
-                // next split at Z
-                if (locZ < currInternal.getZorig() + currInternal.getZwidth()
-                    / 2) {
-                    currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                        insertObject));
-                }
-                else {
-                    currInternal.setRight(recursiveInsert(currInternal
-                        .getRight(), insertObject));
-                }
-            }
-            else {
-                // next split at X
-                if (locX < currInternal.getXorig() + currInternal.getXwidth()
-                    / 2) {
-                    currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
-                        insertObject));
-                }
-                else {
-                    currInternal.setRight(recursiveInsert(currInternal
-                        .getRight(), insertObject));
-                }
+            if (overlap(currInternal.getRight(), insertObject)){
+                currInternal.setRight(recursiveInsert(currInternal
+                    .getRight(), insertObject));
             }
         }
         return curr;
@@ -375,10 +344,6 @@ public class BinTree {
             LeafAirObject currLeaf = (LeafAirObject)curr;
             if (!currLeaf.isEmpty() && currLeaf.findObject(removeObject)) {
                 currLeaf.removeAirObject(removeObject);
-                if (currLeaf.isEmpty()) {
-                    Flyweight flyWeight = new Flyweight();
-                    curr = flyWeight;
-                }
             }
         }
         else {
@@ -401,56 +366,57 @@ public class BinTree {
     private AirObject garbageCollect(AirObject currNode) {
         if (currNode instanceof InternalAirObject) {
             InternalAirObject currInternal = (InternalAirObject)currNode;
-            if (currInternal.getLeft() instanceof Flyweight && currInternal
-                .getRight() instanceof Flyweight) {
-                return new Flyweight(currInternal.getXorig(), currInternal
-                    .getYorig(), currInternal.getZorig(), currInternal
-                        .getXwidth(), currInternal.getYwidth(), currInternal
-                            .getZwidth(), currInternal.getLevel());
-            }
-            else if (currInternal.getLeft() instanceof Flyweight && currInternal
+            if (currInternal.getLeft() instanceof LeafAirObject && currInternal
                 .getRight() instanceof LeafAirObject) {
-                LeafAirObject currLeaf = (LeafAirObject)currInternal.getRight();
-                currLeaf.setLevel(currInternal.getLevel());
-                currLeaf.setxOrig(currInternal.getXorig());
-                currLeaf.setyOrig(currInternal.getYorig());
-                currLeaf.setzOrig(currInternal.getZorig());
-                currLeaf.setxWidth(currInternal.getXwidth());
-                currLeaf.setyWidth(currInternal.getYwidth());
-                currLeaf.setzWidth(currInternal.getZwidth());
-                return currLeaf;
-            }
-            else if (currInternal.getRight() instanceof Flyweight
-                && currInternal.getLeft() instanceof LeafAirObject) {
-                LeafAirObject currLeaf = (LeafAirObject)currInternal.getLeft();
-                currLeaf.setLevel(currInternal.getLevel());
-                currLeaf.setxOrig(currInternal.getXorig());
-                currLeaf.setyOrig(currInternal.getYorig());
-                currLeaf.setzOrig(currInternal.getZorig());
-                currLeaf.setxWidth(currInternal.getXwidth());
-                currLeaf.setyWidth(currInternal.getYwidth());
-                currLeaf.setzWidth(currInternal.getZwidth());
-                return currLeaf;
+                LeafAirObject left = (LeafAirObject)currInternal.getLeft();
+                LeafAirObject right = (LeafAirObject)currInternal.getRight();
+                if (left.isEmpty() && right.isEmpty()) {
+                    return new LeafAirObject(currInternal.getXorig(),
+                        currInternal.getYorig(), currInternal.getZorig(),
+                        currInternal.getXwidth(), currInternal.getYwidth(),
+                        currInternal.getZwidth(), currInternal.getLevel());
+                }
+                else if (left.isEmpty() && !right.isEmpty()) {
+                    LeafAirObject currLeaf = (LeafAirObject)currInternal
+                        .getRight();
+                    currLeaf.setLevel(currInternal.getLevel());
+                    currLeaf.setxOrig(currInternal.getXorig());
+                    currLeaf.setyOrig(currInternal.getYorig());
+                    currLeaf.setzOrig(currInternal.getZorig());
+                    currLeaf.setxWidth(currInternal.getXwidth());
+                    currLeaf.setyWidth(currInternal.getYwidth());
+                    currLeaf.setzWidth(currInternal.getZwidth());
+                    return currLeaf;
+                }
+                else if (!left.isEmpty() && right.isEmpty()) {
+                    LeafAirObject currLeaf = (LeafAirObject)currInternal
+                        .getLeft();
+                    currLeaf.setLevel(currInternal.getLevel());
+                    currLeaf.setxOrig(currInternal.getXorig());
+                    currLeaf.setyOrig(currInternal.getYorig());
+                    currLeaf.setzOrig(currInternal.getZorig());
+                    currLeaf.setxWidth(currInternal.getXwidth());
+                    currLeaf.setyWidth(currInternal.getYwidth());
+                    currLeaf.setzWidth(currInternal.getZwidth());
+                    return currLeaf;
+                }
             }
             else {
                 currInternal.setLeft(garbageCollect(currInternal.getLeft()));
                 currInternal.setRight(garbageCollect(currInternal.getRight()));
-                if (!garbageCollectHelper(currInternal)) {
-                    currNode = garbageCollect(currInternal);
+                if (currInternal.getLeft() instanceof LeafAirObject && currInternal.getRight() instanceof LeafAirObject) {
+                    if (!garbageCollectHelper((LeafAirObject)currInternal.getLeft(), (LeafAirObject)currInternal.getRight())) {
+                        currNode = garbageCollect(currInternal);
+                    }
                 }
             }
         }
         return currNode;
     }
 
-
-    private boolean garbageCollectHelper(InternalAirObject currInternal) {
-        return !(currInternal.getLeft() instanceof Flyweight && currInternal
-            .getRight() instanceof Flyweight) && !(currInternal
-                .getLeft() instanceof LeafAirObject && currInternal
-                    .getRight() instanceof Flyweight) && !(currInternal
-                        .getRight() instanceof LeafAirObject && currInternal
-                            .getLeft() instanceof Flyweight);
+    private boolean garbageCollectHelper(LeafAirObject left, LeafAirObject right) {
+        return !(left.isEmpty() && right.isEmpty()) && !(!left.isEmpty() && right.isEmpty()) && !(
+            !right.isEmpty() && left.isEmpty());
 
     }
 
