@@ -212,7 +212,7 @@ public class SkipList<K extends Comparable<K>, E> {
                 infoString += " ";
             }
             System.out.println("Node has depth " + x.forward().length + ", "
-                + "Value (" + infoString + ")");
+                + "Value (" + infoString.trim() + ")");
             traverseNum++;
         }
         System.out.println(traverseNum + " skiplist nodes printed");
@@ -234,6 +234,7 @@ public class SkipList<K extends Comparable<K>, E> {
         if (object.getObjectType().equals(AirObject.AIROBJECT)) {
             return info;
         }
+        info.append(object.getName());
         info.append(String.valueOf(object.getXorig()));
         info.append(String.valueOf(object.getYorig()));
         info.append(String.valueOf(object.getZorig()));

@@ -149,7 +149,7 @@ public class BinTree {
 
 
     private boolean shouldSplit(LeafAirObject leaf, AirObject insertObject) {
-        if (leaf.getCurrNum() <= 3)
+        if (leaf.getCurrNum() < 3)
             return false;
         AirObject[] container = leaf.getContainer();
         int overlapCount = 0;
@@ -180,9 +180,9 @@ public class BinTree {
         int object2maxZ = object2.getZorig() + object2.getZwidth();
         int object2minZ = object2.getZorig();
 
-        return (object1maxX > object2minX || object1minX < object2maxX)
-            && (object1maxY > object2minY || object1minY < object2maxY)
-            && (object1maxZ > object2minZ || object1minZ < object2maxZ);
+        return object1maxX > object2minX && object1minX < object2maxX
+            && object1maxY > object2minY && object1minY < object2maxY
+            && object1maxZ > object2minZ && object1minZ < object2maxZ;
     }
 
 
@@ -370,12 +370,15 @@ public class BinTree {
      */
     // check if we have the remove object in skiplist before we call the remove
     private AirObject remove(AirObject curr, AirObject removeObject) {
+        // base case
         if (curr instanceof LeafAirObject) {
             LeafAirObject currLeaf = (LeafAirObject)curr;
-            currLeaf.removeAirObject(removeObject);
-            if (currLeaf.isEmpty()) {
-                Flyweight flyWeight = new Flyweight();
-                curr = flyWeight;
+            if (!currLeaf.isEmpty() && currLeaf.findObject(removeObject)) {
+                currLeaf.removeAirObject(removeObject);
+                if (currLeaf.isEmpty()) {
+                    Flyweight flyWeight = new Flyweight();
+                    curr = flyWeight;
+                }
             }
         }
         else {
@@ -473,18 +476,8 @@ public class BinTree {
         list.append(currNode);
         if (currNode instanceof InternalAirObject) {
             InternalAirObject currInternal = (InternalAirObject)currNode;
-            list.append(currInternal);
             preorderHelper(currInternal.getLeft(), list);
             preorderHelper(currInternal.getRight(), list);
-        }
-        else {
-            // this is a leaf air object
-            LeafAirObject currLeaf = (LeafAirObject)currNode;
-            list.append(currLeaf);
-            AirObject[] container = currLeaf.getContainer();
-            for (int i = 0; i < currLeaf.getCurrNum(); i++) {
-                list.append(container[i]);
-            }
         }
     }
 }

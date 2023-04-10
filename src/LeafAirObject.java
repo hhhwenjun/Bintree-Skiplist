@@ -93,6 +93,17 @@ public class LeafAirObject extends AirObject {
         AirObject lastObject = container[numOfObject];
         container[index] = lastObject;
         container[numOfObject] = null;
+        sort();
+    }
+    
+    public boolean findObject(AirObject airObject) {
+        String targetName = airObject.getName();
+        for (int i = 0; i < numOfObject; i++) {
+            if (targetName.equals(container[i].getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
