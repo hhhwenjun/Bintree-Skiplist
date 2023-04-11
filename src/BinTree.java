@@ -226,7 +226,6 @@ public class BinTree {
                 if (overlap(container[i], box)) {
                     boolean found = false;
                     AirObject currObj = container[i];
-
                     results.moveToStart();
                     if (results.length() > 0) {
                         for (int k = 0; k < results.length(); k++) {
@@ -237,7 +236,6 @@ public class BinTree {
                         }
                         results.moveToEnd();
                     }
-
                     if (!found)
                         results.append(currObj);
                 }
@@ -336,7 +334,6 @@ public class BinTree {
                             }
                             list.moveToEnd();
                         }
-
                         if (!found) {
                             list.append(new Pair<>(container[i], container[j]));
                         }

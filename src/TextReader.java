@@ -201,9 +201,7 @@ public class TextReader {
             if (collisionList.isEmpty()) {
                 return;
             }
-
             for (int i = 0; i < collisionList.length(); i++) {
-
                 Pair<AirObject, AirObject> objPair = collisionList.getValue();
                 LinkedList<String> pair1 = SkipList.getAirInfo(objPair
                     .getLeft());
@@ -228,7 +226,6 @@ public class TextReader {
 
                 int numOfObjList = traverseResults.length();
                 for (int i = 0; i < numOfObjList; i++) {
-
                     AirObject curr = traverseResults.getValue();
                     if (curr instanceof InternalAirObject) {
                         System.out.println(printSpace(curr.getLevel()) + "I");
@@ -310,7 +307,6 @@ public class TextReader {
                     for (int j = 0; j < currLeaf.getCurrNum(); j++) {
                         boolean found = false;
                         AirObject curr = container[j];
-
                         objects.moveToStart();
                         if (objects.length() > 0) {
                             for (int k = 0; k < objects.length(); k++) {
@@ -321,7 +317,6 @@ public class TextReader {
                             }
                             objects.moveToEnd();
                         }
-
                         if (!found)
                             objects.append(container[j]);
                     }
