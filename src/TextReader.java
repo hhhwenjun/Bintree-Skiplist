@@ -305,7 +305,21 @@ public class TextReader {
                 if (!currLeaf.isEmpty()) {
                     AirObject[] container = currLeaf.getContainer();
                     for (int j = 0; j < currLeaf.getCurrNum(); j++) {
-                        objects.append(container[j]);
+                        boolean found = false;
+                        AirObject curr = container[j];
+                        
+                        objects.moveToStart();
+                        if (objects.length() > 0) {
+                            for (int k = 0; k < objects.length(); k++) {
+                                if (objects.getValue().compareTo(curr) == 0) {
+                                    found = true;
+                                }
+                                objects.next();
+                            }
+                            objects.moveToEnd();
+                        }
+                        
+                        if (!found)objects.append(container[j]);
                     }
                 } 
             }            
@@ -371,7 +385,7 @@ public class TextReader {
                 balloon.setyWidth(Integer.valueOf(addData[7]));
                 balloon.setzWidth(Integer.valueOf(addData[8]));
                 balloon.setType(addData[9]);
-                balloon.setType(addData[10]);
+                balloon.setAscentRate(Integer.valueOf(addData[10]));
                 return balloon;
             case "airplane":
                 Airplane airplane = new Airplane(addData[2]); // set name here
