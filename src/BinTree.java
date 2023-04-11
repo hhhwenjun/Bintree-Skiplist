@@ -226,7 +226,7 @@ public class BinTree {
                 if (overlap(container[i], box)) {
                     boolean found = false;
                     AirObject currObj = container[i];
-                    
+
                     results.moveToStart();
                     if (results.length() > 0) {
                         for (int k = 0; k < results.length(); k++) {
@@ -237,8 +237,9 @@ public class BinTree {
                         }
                         results.moveToEnd();
                     }
-                    
-                    if (!found)results.append(currObj);
+
+                    if (!found)
+                        results.append(currObj);
                 }
             }
         }
@@ -324,7 +325,8 @@ public class BinTree {
 
                         if (list.length() > 0) {
                             for (int k = 0; k < list.length(); k++) {
-                                Pair<AirObject, AirObject> pair = list.getValue();
+                                Pair<AirObject, AirObject> pair = list
+                                    .getValue();
                                 if (pair.getLeft().compareTo(container[i]) == 0
                                     && pair.getRight().compareTo(
                                         container[j]) == 0) {
@@ -334,7 +336,7 @@ public class BinTree {
                             }
                             list.moveToEnd();
                         }
-                        
+
                         if (!found) {
                             list.append(new Pair<>(container[i], container[j]));
                         }
