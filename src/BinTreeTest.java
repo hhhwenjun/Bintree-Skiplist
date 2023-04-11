@@ -58,13 +58,13 @@ public class BinTreeTest extends TestCase {
         testObject3.setLevel(5);
 
         testObject4 = new AirObject("Orange");
-        testObject1.setxOrig(200);
-        testObject1.setyOrig(200);
-        testObject1.setzOrig(200);
-        testObject1.setxWidth(50);
-        testObject1.setyWidth(50);
-        testObject1.setzWidth(50);
-        testObject1.setLevel(10);
+        testObject4.setxOrig(200);
+        testObject4.setyOrig(200);
+        testObject4.setzOrig(200);
+        testObject4.setxWidth(50);
+        testObject4.setyWidth(50);
+        testObject4.setzWidth(50);
+        testObject4.setLevel(10);
 
         testPair = new Pair<AirObject, AirObject>(testObject1, testObject2);
 

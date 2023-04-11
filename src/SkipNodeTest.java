@@ -3,8 +3,8 @@ import student.TestCase;
 /**
  * Test case for skip node
  * 
- * @author Wenjun Han
- * @version 4.24.22
+ * @author Xuhui Zeng
+ * @version 2023.04.10
  *
  */
 public class SkipNodeTest extends TestCase {
