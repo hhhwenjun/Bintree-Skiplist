@@ -97,6 +97,12 @@ public class LeafAirObject extends AirObject {
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Find an object
+     * @param airObject air object
+     * @return whether the object is found
+     */
     public boolean findObject(AirObject airObject) {
         String targetName = airObject.getName();
         for (int i = 0; i < numOfObject; i++) {
