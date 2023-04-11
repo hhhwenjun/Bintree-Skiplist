@@ -58,7 +58,8 @@ public class LeafAirObjectTest extends TestCase {
         assertEquals(3, testObject1.getCurrNum());
 
         testObject1.removeAirObject(testObject2);
-        testArray[0] = testObject5;
+        testArray[0] = testObject4;
+        testArray[1] = testObject5;
         testArray[2] = null;
         assertArrayEquals(testArray, testObject1.getContainer());
         assertEquals(2, testObject1.getCurrNum());
