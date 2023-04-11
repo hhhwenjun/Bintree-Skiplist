@@ -307,7 +307,6 @@ public class TextReader {
                     for (int j = 0; j < currLeaf.getCurrNum(); j++) {
                         boolean found = false;
                         AirObject curr = container[j];
-                        
                         objects.moveToStart();
                         if (objects.length() > 0) {
                             for (int k = 0; k < objects.length(); k++) {
@@ -318,11 +317,11 @@ public class TextReader {
                             }
                             objects.moveToEnd();
                         }
-                        
-                        if (!found)objects.append(container[j]);
+                        if (!found)
+                            objects.append(container[j]);
                     }
-                } 
-            }            
+                }
+            }
             results.next();
         }
         return objects;
