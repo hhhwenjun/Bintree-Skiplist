@@ -206,7 +206,7 @@ public class SkipList<K extends Comparable<K>, E> {
             LinkedList<String> objectInfo = getAirInfo(element);
             objectInfo.moveToStart();
             String infoString = "";
-            while (!objectInfo.isAtEnd()) {
+            for (int i = 0; i < objectInfo.length(); i++) {
                 infoString += objectInfo.getValue();
                 objectInfo.next();
                 infoString += " ";

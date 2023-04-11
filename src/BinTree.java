@@ -108,9 +108,9 @@ public class BinTree {
                 currInternal.setLeft(recursiveInsert(currInternal.getLeft(),
                     insertObject));
             }
-            if (overlap(currInternal.getRight(), insertObject)){
-                currInternal.setRight(recursiveInsert(currInternal
-                    .getRight(), insertObject));
+            if (overlap(currInternal.getRight(), insertObject)) {
+                currInternal.setRight(recursiveInsert(currInternal.getRight(),
+                    insertObject));
             }
         }
         return curr;
@@ -224,7 +224,21 @@ public class BinTree {
             AirObject[] container = currLeaf.getContainer();
             for (int i = 0; i < currLeaf.getCurrNum(); i++) {
                 if (overlap(container[i], box)) {
-                    results.append(container[i]);
+                    boolean found = false;
+                    AirObject currObj = container[i];
+                    
+                    results.moveToStart();
+                    if (results.length() > 0) {
+                        for (int k = 0; k < results.length(); k++) {
+                            if (results.getValue().compareTo(currObj) == 0) {
+                                found = true;
+                            }
+                            results.next();
+                        }
+                        results.moveToEnd();
+                    }
+                    
+                    if (!found)results.append(currObj);
                 }
             }
         }
@@ -304,7 +318,26 @@ public class BinTree {
             for (int i = 0; i < currLeaf.getCurrNum(); i++) {
                 for (int j = i + 1; j < currLeaf.getCurrNum(); j++) {
                     if (overlap(container[i], container[j])) {
-                        list.append(new Pair<>(container[i], container[j]));
+                        // check if duplicate
+                        list.moveToStart();
+                        boolean found = false;
+
+                        if (list.length() > 0) {
+                            for (int k = 0; k < list.length(); k++) {
+                                Pair<AirObject, AirObject> pair = list.getValue();
+                                if (pair.getLeft().compareTo(container[i]) == 0
+                                    && pair.getRight().compareTo(
+                                        container[j]) == 0) {
+                                    found = true;
+                                }
+                                list.next();
+                            }
+                            list.moveToEnd();
+                        }
+                        
+                        if (!found) {
+                            list.append(new Pair<>(container[i], container[j]));
+                        }
                     }
                 }
             }
@@ -404,8 +437,10 @@ public class BinTree {
             else {
                 currInternal.setLeft(garbageCollect(currInternal.getLeft()));
                 currInternal.setRight(garbageCollect(currInternal.getRight()));
-                if (currInternal.getLeft() instanceof LeafAirObject && currInternal.getRight() instanceof LeafAirObject) {
-                    if (!garbageCollectHelper((LeafAirObject)currInternal.getLeft(), (LeafAirObject)currInternal.getRight())) {
+                if (currInternal.getLeft() instanceof LeafAirObject
+                    && currInternal.getRight() instanceof LeafAirObject) {
+                    if (!garbageCollectHelper((LeafAirObject)currInternal
+                        .getLeft(), (LeafAirObject)currInternal.getRight())) {
                         currNode = garbageCollect(currInternal);
                     }
                 }
@@ -414,9 +449,12 @@ public class BinTree {
         return currNode;
     }
 
-    private boolean garbageCollectHelper(LeafAirObject left, LeafAirObject right) {
-        return !(left.isEmpty() && right.isEmpty()) && !(!left.isEmpty() && right.isEmpty()) && !(
-            !right.isEmpty() && left.isEmpty());
+
+    private boolean garbageCollectHelper(
+        LeafAirObject left,
+        LeafAirObject right) {
+        return !(left.isEmpty() && right.isEmpty()) && !(!left.isEmpty()
+            && right.isEmpty()) && !(!right.isEmpty() && left.isEmpty());
 
     }
 
